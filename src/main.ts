@@ -4,10 +4,13 @@ import 'element-plus/lib/theme-chalk/index.css';
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { stat } from './utils/stat'
 
 const app = createApp(App)
+
 app.use(ElementPlus)
 app.use(router)
 app.use(store)
 app.mount('#app')
 
+app.config.globalProperties.$stat = stat;
