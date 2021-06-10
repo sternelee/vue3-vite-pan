@@ -1,0 +1,122 @@
+:root {
+	--main-color: #3F85FF;
+  --main-color-dark: #2670EA;
+  --color-title: #1a1a1a;
+  --color-default: #4d4d4d;
+  --color-border: #eee;
+  --color-item-active: #e5f0fe;
+  --color-item-hover: #eff6fe;
+  --color-secondary: #b3b3b3;
+  --background-main: #f5f5f5;
+  --background-module: #fff;
+  --color-border-form: #ccc;
+}
+
+body {
+  margin: 0 auto;
+}
+.el-dialog__header {
+  padding: 24px 16px 16px 16px;
+  font-size: 18px;
+  color: rgba(0,0,0,0.85);
+  text-align: center;
+}
+
+.el-dialog__title {
+  font-size: 18px;
+}
+
+.el-message-box__status.el-icon-warning {
+  color: #FAAD14;
+}
+
+.el-message-box {
+  padding: 9px 0 24px 0;
+  box-shadow: 0 6px 16px -8px rgba(0,0,0,0.08), 0 9px 28px 0 rgba(0,0,0,0.05), 0 12px 48px 16px rgba(0,0,0,0.03);
+  border-radius: 2px;
+}
+
+.el-button {
+  font-size: 14px;
+}
+
+.el-message-box__message {
+  p {
+    font-size: 16px;
+    color: rgba(0,0,0,0.85);
+  }
+}
+
+.el-dialog__headerbtn {
+  top: 16px;
+}
+
+.el-button--primary {
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+}
+
+.el-progress-bar__inner {
+  border-radius: 0;
+}
+
+.el-progress-bar__outer {
+  background-color: #EBEEF5;
+  border-radius: 0;
+}
+
+.input__inner:focus {
+  border-color: var(--main-color);
+}
+
+.el-slider__stop {
+  background-color: transparent;
+}
+
+.el-slider__runway {
+  border-radius: 0;
+  background-color: #E6E6E6;
+}
+
+.el-slider__bar {
+  background-color: var(--main-color);
+  border-radius: 0;
+}
+
+.el-slider__button {
+  border: 4px solid rgba(63, 133, 255, .5);
+  background: #fff;
+}
+
+.el-message {
+  min-width: 228px;
+  border: 0;
+  border-radius: 4px;
+  background: #3F85FF;
+  box-shadow: 0 0 10px 0 rgba(26,26,26,0.20);
+
+  .el-message__content {
+    font-size: 12px;
+    color: #FFFFFF;
+  }
+
+  .el-message__icon {
+    color: #fff;
+    font-size: 16px;
+  }
+}
+
+.el-message--warning {
+  background: #FF9700;
+  box-shadow: 0 0 10px 0 rgba(26, 26, 26, 0.20);
+}
+
+.el-message--error {
+  background: #E66056;
+  box-shadow: 0 0 10px 0 rgba(26, 26, 26, 0.20);
+}
+
+.el-message--success {
+  background: #38B878;
+  box-shadow: 0 0 10px 0 rgba(26,26,26,0.20);
+}

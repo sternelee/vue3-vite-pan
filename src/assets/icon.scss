@@ -1,0 +1,69 @@
+@font-face {
+  font-family: 'iconfont';
+  src: url('./fonts/iconfont.woff') format('woff'),
+      url('./fonts/iconfont.svg#font') format('svg');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-folder:before {
+  content: "\e611";
+}
+
+.icon-poweroff:before {
+  content: "\e610";
+}
+
+.icon-lightning:before {
+  content: "\e60f";
+}
+
+.icon-refresh:before {
+  content: "\e62e";
+}
+
+.icon-success:before {
+  content: "\e60e";
+}
+
+.icon-ing:before {
+  content: "\e60d";
+}
+
+.icon-done:before {
+  content: "\e60c";
+}
+
+.icon-pause:before {
+  content: "\e646";
+}
+
+.icon-plus:before {
+  content: "\e623";
+}
+
+.icon-cross:before {
+  content: "\e62c";
+}
+
+.icon-down:before {
+  content: "\e604";
+}
+
+.icon-loading:before {
+  content: "\e606";
+}
+
+.icon-warning:before {
+  content: "\e608";
+}
+
+.icon-retry:before {
+  content: "\e60a";
+}
