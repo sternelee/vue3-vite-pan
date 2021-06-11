@@ -6,7 +6,7 @@
           <el-checkbox v-model="checked"></el-checkbox>
         </div>
         <div class="nas-file-item__icon">
-          <img :src="file | displayIcon" alt="图标">
+          <img :src="displayIcon" alt="图标">
         </div>
         <div class="nas-file-item__content">
           <div class="nas-file-item__name">
@@ -15,7 +15,7 @@
         </div>
         <div class="nas-file-item__desc">
           <span v-if="file.size" class="nas-file-item__size">{{ formatSize(file.size) }}</span>
-          <span class="nas-file-item__date">{{ file.modified_time | parseTime }}</span>
+          <span class="nas-file-item__date">{{ modifiedTime }}</span>
         </div>
       </div>
     </div>
@@ -34,20 +34,21 @@ export default defineComponent({
       default: () => ({})
     }
   },
+  emits: ['open'],
   data () {
     return {
       checked: false,
     }
   },
   filters: {
-    parseTime (time) {
-      return parseTime(time, '{y}-{m}-{d} {h}:{i}')
+    modifiedTime () {
+      return parseTime(this.file.modified_time, '{y}-{m}-{d} {h}:{i}')
     },
-    displayIcon (file) {
-      return file.thumbnail_link || file.icon_link || staticIcons.other
-    }
   },
   computed: {
+    displayIcon () {
+      return this.file.thumbnail_link || this.file.icon_link || staticIcons.other
+    }
   },
   methods: {
     formatSize,

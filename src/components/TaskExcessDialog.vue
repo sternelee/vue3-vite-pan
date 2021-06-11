@@ -1,10 +1,10 @@
 <template>
   <el-dialog
     title="温馨提示"
-    :visible="visible"
+    v-model="visible"
     width="520px"
     center
-    class="task-excess-dialog"
+    custom-class="task-excess-dialog"
     :close-on-click-modal="false"
     @close="handleClose"
   >
@@ -41,6 +41,7 @@ export default defineComponent({
   components: {
     Loading
   },
+  emits: ['close', 'logout'],
   data() {
     return {
       error: false,

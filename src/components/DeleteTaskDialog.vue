@@ -1,10 +1,10 @@
 <template>
   <el-dialog
     title="确定要删除该任务吗？"
-    :visible="visible"
+    v-model="visible"
     width="400px"
     :close-on-click-modal="false"
-    class="task-delete-dialog"
+    custom-class="task-delete-dialog"
     :destroy-on-close="true"
     @close="handleClose"
   >
@@ -23,6 +23,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   props: ['visible'],
   components: {},
+  emits: ['close', 'confirm'],
   data () {
     return {
       checked: false

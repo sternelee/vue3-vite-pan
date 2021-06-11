@@ -2,11 +2,11 @@
   <el-dialog
     title="意见反馈"
     v-if="visible"
-    :visible="visible"
+    v-model="visible"
     width="580px"
     :close-on-click-modal="false"
     :destroy-on-close="true"
-    class="nas-feedback-dialog"
+    custom-class="nas-feedback-dialog"
     @close="handleClose"
   >
     <div class="task-dialog__content">
@@ -28,6 +28,7 @@ import { defineComponent } from 'vue'
 export default defineComponent({
   props: ['visible'],
   components: {},
+  emits: ['close'],
   data () {
     return {
       btnText: '确定',

@@ -1,34 +1,32 @@
 <template>
-  <div>
-    <div class="task-list">
-      <div>
-        <div class="task-list__title">
-          <h3>{{ title }}</h3>
-        </div>
-        <list-empty v-if="!hasLogin"></list-empty>
-        <div v-else-if="tasks.list.length === 0" class="task-list__empty">
-          <file-empty text="暂无记录"></file-empty>
-        </div>
-        <div v-else class="task-list__content" ref="list">
-          <ul>
-            <task-list-item
-              v-for="item in tasks.list"
-              :key="item.id"
-              :info="item"
-              @refresh="refresh"
-              @delete="handleDelete"
-            />
-          </ul>
-          <loading v-if="hasMore" v-see="loadMore" />
-        </div>
+  <div class="task-list">
+    <div>
+      <div class="task-list__title">
+        <h3>{{ title }}</h3>
+      </div>
+      <list-empty v-if="!hasLogin"></list-empty>
+      <div v-else-if="tasks.list.length === 0" class="task-list__empty">
+        <file-empty text="暂无记录"></file-empty>
+      </div>
+      <div v-else class="task-list__content" ref="list">
+        <ul>
+          <task-list-item
+            v-for="item in tasks.list"
+            :key="item"
+            :file="item"
+            @refresh="refresh"
+            @delete="handleDelete"
+          />
+        </ul>
+        <loading v-if="hasMore" v-see="loadMore" />
       </div>
     </div>
-    <delete-task-dialog 
-      :visible="deleteVisible"
-      @confirm="handleDeleteConfirm"
-      @close="handleClose"
-    />
   </div>
+  <delete-task-dialog
+    :visible="deleteVisible"
+    @confirm="handleDeleteConfirm"
+    @close="handleClose"
+  />
 </template>
 <script>
 import { defineComponent } from 'vue'
@@ -56,6 +54,7 @@ export default defineComponent({
       default: 'ing'
     }
   },
+  emits: ['delete-success', 'add-url'],
   data () {
     return {
       deleteVisible: false,

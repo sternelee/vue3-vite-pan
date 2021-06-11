@@ -47,6 +47,7 @@ export default defineComponent({
       default: 'ing'
     }
   },
+  emits: ['open'],
   data () {
     return {
       parent_id:""

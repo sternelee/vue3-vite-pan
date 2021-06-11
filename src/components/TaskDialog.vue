@@ -2,11 +2,11 @@
   <el-dialog
     title="添加下载链接"
     v-if="visible"
-    :visible="visible"
+    v-model="visible"
     width="580px"
     :close-on-click-modal="false"
     :destroy-on-close="true"
-    class="nas-task-dialog"
+    custom-class="nas-task-dialog"
     @close="handleClose"
   >
     <div class="task-dialog__content">
@@ -32,6 +32,7 @@ import { checkValidLink } from '../utils/util'
 export default defineComponent({
   props: ['visible'],
   components: {},
+  emits: ['close', 'submit'],
   data () {
     return {
       btnText: '确定',

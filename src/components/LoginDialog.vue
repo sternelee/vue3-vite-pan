@@ -1,11 +1,11 @@
 <template>
   <el-dialog
     title="扫码登录"
-    :visible="visible"
+    v-model="visible"
     width="520px"
     center
     :close-on-click-modal="false"
-    class="nas-login-dialog"
+    custom-class="nas-login-dialog"
     @close="handleClose"
   >
     <div class="nas-login__content">
@@ -60,6 +60,7 @@ export default defineComponent({
   components: {
     Loading
   },
+  emits: ['close', 'login-success'],
   data() {
     return {
       loading: true,
@@ -79,7 +80,6 @@ export default defineComponent({
       }
     }
   },
-  filters: {},
   async mounted() {
     if (this.visible) {
       this.genQrCode();

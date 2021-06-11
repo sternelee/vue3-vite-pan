@@ -2,11 +2,11 @@
   <el-dialog
     title="超过同时登录设备上限"
     width="520px"
-    :visible="visible"
+    v-model="visible"
     :show-close="false"
     :close-on-click-modal="false"
     center
-    class="nas-device-dialog"
+    custom-class="nas-device-dialog"
     @close="handleClose"
   >
     <div slot="title" class="el-dialog__title">
@@ -30,6 +30,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: ["visible", "loading","text"],
+  emits: ['close', 'logout'],
   data() {
     return {
       expired: false

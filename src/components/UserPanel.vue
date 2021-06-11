@@ -31,7 +31,7 @@
           class="nas-user__vip-tip"
           v-if="vipData.isVip"
         >
-          你的会员将于{{ vipData.expiresAt | parseTime }}到期
+          你的会员将于{{ expiresAt }}到期
         </div>
       </div>
     </div>
@@ -63,11 +63,9 @@ export default defineComponent({
     },
     hasLogin() {
       return this.curUser.userId !== '0'
-    }
-  },
-  filters: {
-    parseTime (time) {
-      return parseTime(time, '{y}-{m}-{d}')
+    },
+    expiresAt () {
+      return parseTime(this.vipData.expiresAt, '{y}-{m}-{d}')
     }
   },
   async mounted() {},

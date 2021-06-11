@@ -1,23 +1,22 @@
 <template>
   <el-container>
     <div>
-      <login-dialog
+      <LoginDialog
         :visible="loginVisible"
-        :url="qrCodeUrl"
         @close="handleLoginClose"
         @login-success="handleLoginSuccess"
       />
-      <task-dialog
+      <TaskDialog
         :visible="taskDialogVisible"
         @close="handleTaskClose"
         @submit="handleParseTaskSubmit"
       />
-      <task-info-dialog
+      <TaskInfoDialog
         :visible="taskInfoDialogVisible"
         :urls="taskAddUrls"
         @close="handleTaskInfoClose"
         @submit="handleAddTaskSubmit"
-      ></task-info-dialog>
+      />
     </div>
     <div class="nas-page">
       <Aside
@@ -26,47 +25,34 @@
         @add-task="handleAddTask"
       />
       <div class="nas-content">
-        <div >
-          <div v-if="tabId === 'ing' || tabId === 'done' ">
-            <task-list
-              :title="tabId === 'ing' ? '下载中' : '已完成'"
-              :phase="tabId"
-              :tasks="tasks"
-              @add-url="handleAddTaskSubmit"
-              @delete-success="handleTaskDeleteSuccess"
-            />
-          </div>
-          <div v-if="tabId==='file'" >
-            <file-list
-              :title="fileListTitle('网盘文件')"
-              :phase="tabId"
-              :files="files"
-              @open="openfile"
-            ></file-list>
-          </div>
-          <div v-if="tabId ==='devicefile'" >
-            <file-list
-              :title="fileListTitle('设备文件')"
-              :phase="tabId"
-              :files="files"
-              @open="openfile"
-            ></file-list>
-          </div>
-        </div>
+        <TaskList
+          v-if="tabId === 'ing' || tabId === 'done'"
+          :title="tabId === 'ing' ? '下载中' : '已完成'"
+          :phase="tabId"
+          @add-url="handleAddTaskSubmit"
+          @delete-success="handleTaskDeleteSuccess"
+        />
+        <FileList
+          v-if="tabId==='file' || tabId ==='devicefile'"
+          :title="fileListTitle(tabId === 'file' ? '网盘文件' : '设备文件')"
+          :phase="tabId"
+          :files="files"
+          @open="openfile"
+        />
       </div>
     </div>
-    <device-excess-dialog
+    <DeviceExcessDialog
       :visible="deviceExcessVisible"
       :loading="logoutLoading"
       :text="deviceExcessText"
       @logout="logout"
       @close="handleDeviceDialogClose"
     />
-    <task-excess-dialog
+    <TaskExcessDialog
       :visible="taskExcessVisible"
       @close="handleTaskDialogClose"
     />
-    <update-dialog
+    <UpdateDialog
       :visible="updateVisible"
       :text="updateText"
       @close="handleUpdateDialogClose"
@@ -209,7 +195,9 @@ export default defineComponent({
     },
     lastUpdateTime(newTime, oldTime) {
       if (newTime !== oldTime) {
-        this.$store.commit('drive/setTaskExpiresIn', 1)
+        this.$store.commit('drive/update', {
+          taskExpiresIn: 1
+        })
         this.checkTasks()
       }
     }
@@ -434,7 +422,9 @@ export default defineComponent({
     async handleTaskDeleteSuccess() {
       await this.getTasks({ phase: this.tabId, refresh: true });
       // check immediately
-      this.$store.commit('drive/setTaskExpiresIn', 1)
+      this.$store.commit('drive/update', {
+        taskExpiresIn: 1
+      })
       this.checkTasks()
     },
     async handleAddTask() {
@@ -501,7 +491,9 @@ export default defineComponent({
           this.$store.commit('drive/setCurrentTabId', 'ing');
           await this.getTasks({ phase: this.tabId, refresh: true });
           // check immediately
-          this.$store.commit('drive/setTaskExpiresIn', 1)
+          this.$store.commit('drive/update', {
+            taskExpiresIn: 1
+          })
           this.checkTasks()
         })
 

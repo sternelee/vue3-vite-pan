@@ -4,7 +4,7 @@
       <div class="task-item__container">
         <div class="task-item__content">
           <div class="task-item__icon">
-            <img :src="info | displayIcon" alt="图标" />
+            <img :src="iconLink" alt="图标" />
           </div>
           <div class="task-item__info">
             <div class="task-item__name" :title="info.id">
@@ -36,9 +36,7 @@
               <span v-else class="task-item__size">
                 {{ formatSize(info.file_size || 0) }}
               </span>
-              <span class="task-item__date">{{
-                info.created_time | parseTime
-              }}</span>
+              <span class="task-item__date"> {{ taskDate }}</span>
               <i class="task-item__date   el-icon-s-data" title="已经抱团"
                 v-if="vipTeamJoined"
               ></i>
@@ -112,6 +110,7 @@
 </template>
 <script>
 import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 import { formatSize } from "../utils/util";
 import { taskPhaseCode } from "../utils/code-res";
 import staticIcons from "../utils/static-icons";
@@ -119,26 +118,23 @@ import { parseTime } from "../utils/filters";
 
 export default defineComponent({
   props: {
-    info: {
-      type: Object,
-      default: () => ({})
+    file: {
+      type: String,
+      default: ""
     }
   },
+  emits: ['delete'],
   data() {
     return {
       refreshFlag: false,
       loading: false
     };
   },
-  filters: {
-    parseTime(time) {
-      return parseTime(time, "{y}-{m}-{d} {h}:{i}");
-    },
-    displayIcon(info) {
-      return info.thumbnail_link || info.icon_link || staticIcons.other;
-    }
-  },
   computed: {
+    ...mapState('drive', ['all']),
+    info () {
+      return this.all[this.file]
+    },
     curUser() {
       return this.$store.state.user.curUser;
     },
@@ -280,10 +276,16 @@ export default defineComponent({
       return taskPhaseCode[this.info.phase];
     },
     hasSpeed () {
-        return this.info.phase === 'PHASE_TYPE_RUNNING' ||
-          this.info.phase === 'PHASE_TYPE_PENDING' ||
-          this.info.phase === 'PHASE_TYPE_PAUSED'
-        }
+      return this.info.phase === 'PHASE_TYPE_RUNNING' ||
+        this.info.phase === 'PHASE_TYPE_PENDING' ||
+        this.info.phase === 'PHASE_TYPE_PAUSED'
+    },
+    iconLink () {
+      return this.info.thumbnail_link || this.info.icon_link || staticIcons.other;
+    },
+    taskDate () {
+      return parseTime(this.info.created_time, "{y}-{m}-{d} {h}:{i}")
+    }
   },
   methods: {
     formatSize,

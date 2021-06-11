@@ -1,10 +1,10 @@
 <template>
   <el-dialog
     title="迅雷"
-    :visible="visible"
+    v-model="visible"
     width="520px"
     center
-    class="about-dialog"
+    custom-class="about-dialog"
     @close="handleClose"
   >
     <div class="about-dialog__content">
@@ -24,6 +24,7 @@ export default defineComponent({
   components: {
     Loading
   },
+  emits: ['close'],
   data() {
     return {
       error: false,

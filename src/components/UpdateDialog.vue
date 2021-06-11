@@ -1,12 +1,12 @@
 <template>
   <el-dialog
     title="当前版本已经过期"
-    :visible="visible"
+    v-model="visible"
     :show-close="false"
     :close-on-click-modal="false"
     width="520px"
     center
-    class="nas-update-dialog"
+    custom-class="nas-update-dialog"
     @close="handleClose"
   >
     <div class="nas-update__content">
@@ -29,6 +29,7 @@
 import { defineComponent } from 'vue'
 export default defineComponent({
   props: ["visible", 'text'],
+  emits: ['close'],
   data() {
     return {
       loading: true

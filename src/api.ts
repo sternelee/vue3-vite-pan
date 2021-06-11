@@ -1,20 +1,35 @@
 import qs from "qs";
-// import { uiauth } from "./uiauth.js";
+import md5 from "md5";
 
-export async function driveFetch(url, method = "GET", params = {}, raw = false) {
-  // const pan_auth = uiauth(new Date().getTime())
-  const pan_auth = ""
+export function uiauth(value) {
+  return (
+    value +
+    "." +
+    md5(
+      value +
+        "xbduajocemprzhtshncvhxgvmwhlvvbmifkdvilrnvygpmzihyturabypvejdlvvveiwhqhkxvfvfgrxidzavhiqvvcpizdtvjqqplllqbfvijrnmwpewjfjirnnyzxobnqqbsackjppyyyranrvmozjtpwljbdgigpxxsymailfqryelwfgiuiynafusghdihlqnoaephwjhyztyoyhdrccezqivifotqzkmcbowkzflpltutnesdegqwyrcjqinpmtbzirxlixrbbpdueruewkuuexnyoqfgituwkspqbecwujrzsxteooodeqlnlgqwqonviwyutlzdgpmaoxskmpjjtrsjqvbsblrahzvfudlvvdyhzoltogatlbgivequprskyuqifujpjultkrlsunkmfcsurqiluawfozopazamoknrmydcgxtlgloxsjcogsdsttzrllzfcjceqtegzifanrkobdohvdytevyhcplakztdfywnlyjdhnpglfaqyemclrlidezuwhojwpoqoblxzorjkyekqjdgjqlyyphtkiwirddrpzfgotumgespkzmiiamvgfhyfzcjradstnukdzpiovihuggyeqbyasyltxidnaapntvuipyehdaikmookbbqrsfxqucjggrtinhmrafwkeylhrhkuriphcabjzlhdhhevjuieiyvxjtvhbjonwyqgomxcexjsctattcewjcwtdokujlwibruplpifbqxchjxuxcukdqggsxiauimzdymaxefcobfoyqusqriunkgxworrbdoudahygequimurlafinhtylpezvyvkvxwfdjwlzifxspftccqoyokeigpysogckzlbqychusixrpmygkciykxnfietqdiwzwczcbwyclsfqukfviccqwfgufqdyqkptbrhyzaxivddoweirttzdabgzdqokrekmzgdqoolhvtyvqkjkupunhjjmohtsqmacmrmjbhyxyliwoqbftfjsnwozxyyf"
+    )
+  );
+}
+
+export async function driveFetch(
+  url,
+  method = "GET",
+  params = {},
+  raw = false
+) {
+  const pan_auth = uiauth(new Date().getTime());
   const req_data = {
     method: method,
     headers: new Headers({
-      "pan-auth": pan_auth
-    })
+      "pan-auth": pan_auth,
+    }),
   };
 
   if (!raw) {
     req_data.headers = new Headers({
       "Content-Type": "application/json",
-      "pan-auth": pan_auth
+      "pan-auth": pan_auth,
     });
   }
 
@@ -24,11 +39,11 @@ export async function driveFetch(url, method = "GET", params = {}, raw = false) 
   ) {
     if (params.file) {
       req_data.headers = new Headers({
-        "pan-auth": pan_auth
+        "pan-auth": pan_auth,
       });
-      const data = new FormData()
-      data.append("file", params.file)
-      req_data.body = data
+      const data = new FormData();
+      data.append("file", params.file);
+      req_data.body = data;
     } else {
       req_data.body = JSON.stringify(params || {});
     }
@@ -38,10 +53,10 @@ export async function driveFetch(url, method = "GET", params = {}, raw = false) 
   }
 
   try {
-    if (url[0] == "/") {
-      url = "." + url;
-    }
-    const response = await fetch(url, req_data);
+    // if (url[0] == "/") {
+    //   url = "." + url;
+    // }
+    const response = await fetch('/api' + url, req_data);
     if (response.ok) {
       if (raw) {
         const data = await response.blob();

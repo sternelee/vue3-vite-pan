@@ -2,10 +2,10 @@
   <el-dialog
     title="添加下载链接"
     v-if="visible"
-    :visible="visible"
+    v-model="visible"
     width="580px"
     :close-on-click-modal="false"
-    class="nas-task-dialog"
+    custom-class="nas-task-dialog"
     @close="handleClose"
   >
     <div class="task-dialog__content">
@@ -68,6 +68,7 @@ export default defineComponent({
     Loading,
     FileEmpty
   },
+  emits: ['close', 'submit'],
   data() {
     return {
       loading: true

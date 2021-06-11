@@ -43,27 +43,27 @@
       </a>
       <div class="nas-task__menu">
         <a
-          :class="tabId === 'ing' && 'active'"
+          :class="tabId === 'ing' ? 'active' : ''"
           @click="() => handleTabChange('ing')"
         >
           <i class="iconfont icon-ing" />下载中
         </a>
         <a
-          :class="tabId === 'done' && 'active'"
+          :class="tabId === 'done' ? 'active' : ''"
           @click="() => handleTabChange('done')"
         >
           <i class="iconfont icon-done" />已完成
         </a>
         <a
           v-if="showFileTab"
-          :class="tabId === 'file' && 'active'"
+          :class="tabId === 'file' ? 'active' : ''"
           @click="() => handleTabChange('file')"
         >
           <i class="iconfont icon-folder" />网盘文件
         </a>
         <a
           v-if="showFileTab"
-          :class="tabId === 'devicefile' && 'active'"
+          :class="tabId === 'devicefile' ? 'active' : ''"
           @click="() => handleTabChange('devicefile')"
         >
           <i class="iconfont icon-folder" />设备文件
@@ -88,10 +88,10 @@
       </div>
       <el-dialog
         title="限制最大下载速度"
-        :visible="visible"
+        v-model="visible"
         width="680px"
         destroy-on-close
-        class="nas-speed-dialog"
+        custom-class="nas-speed-dialog"
         :show-close="false"
         :close-on-click-modal="false"
         @close="handleClose"
@@ -168,6 +168,7 @@ export default defineComponent({
     UserPanel,
     AboutDialog
   },
+  emits: ['login', 'add-task', 'change-tab'],
   data() {
     return {
       defaultAvatar,

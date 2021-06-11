@@ -1,5 +1,5 @@
-import { driveFetch } from "../api";
-import staticIcons from "@/utils/static-icons.js";
+import { driveFetch } from "@/api";
+import staticIcons from "../utils/static-icons";
 
 const USER_DOWNLOAD_URL = "user#download-url";
 const ING_PHASE = [
@@ -16,14 +16,21 @@ export default {
   namespaced: true,
   modules: {},
   state: () => ({
-    all: {},
+    all: {}, // 使用id为key的大数据
     cache_files: {},
     files: {
       list: [],
       pageToken: "",
       hasMore: false,
     },
+    // 进行中的任务
     tasks: {
+      list: [], // 任务id列表
+      pageToken: "",
+      restCount: 0,
+    },
+    // 已完成的任务
+    tasksDone: {
       list: [],
       pageToken: "",
       restCount: 0,
@@ -47,7 +54,7 @@ export default {
   getters: {},
   mutations: {
     set(state, file) {
-      Vue.set(state.all, file.id, Object.assign({}, state.all[file.id], file));
+      state.all[file.id] = Object.assign({}, state.all[file.id], file)
     },
     add(state, file) {
       state.home.list.unshift(file);
@@ -85,8 +92,8 @@ export default {
 
       const idHash = {};
       newList = newList.reduce(function (accumulator, currentValue) {
-        if (!idHash[currentValue.id]) {
-          idHash[currentValue.id] = true;
+        if (!idHash[currentValue]) {
+          idHash[currentValue] = true;
           accumulator.push(currentValue);
         }
         return accumulator;
@@ -96,9 +103,6 @@ export default {
         list: newList,
         pageToken,
       };
-    },
-    setTaskExpiresIn(state, data) {
-      state.taskExpiresIn = data;
     },
     delTasks(state, { ids, type }) {
       if (type === "spec") {
@@ -115,11 +119,12 @@ export default {
           }
         });
       } else {
-        state.tasks.list = state.tasks.list.filter((v) => !ids.includes(v.id));
+        state.tasks.list = state.tasks.list.filter((v) => !ids.includes(v));
       }
     },
     pauseTasks(state, { ids, type }) {
-      state.tasks.list = state.tasks.list.map((v) => {
+      state.tasks.list = state.tasks.list.map((k) => {
+        const v = state.all[k]
         for (let id of ids) {
           if (v.id === id && v.params) {
             const spec = '{"phase":"pause"}';
@@ -132,7 +137,8 @@ export default {
       });
     },
     resumeTasks(state, { ids, type }) {
-      state.tasks.list = state.tasks.list.map((v) => {
+      state.tasks.list = state.tasks.list.map((k) => {
+        const v = state.all[k]
         for (let id of ids) {
           if (v.id === id && v.params) {
             const spec = '{"phase":"running"}';
@@ -149,7 +155,7 @@ export default {
       if (phaseType === "done") {
         // 解决移动端删除操作，PC同步更新问题
         const refreshDoneList = list.filter((item) =>
-          DONE_PHASE.includes(item.phase.toUpperCase())
+          DONE_PHASE.includes(state.all[item].phase.toUpperCase())
         );
 
         let pageDoneList = state.tasks.list;
@@ -162,7 +168,7 @@ export default {
           let lastItem = refreshDoneList[checkLen - 1];
           let lastIndex = checkLen - 1;
           for (let index = 0; index < pageDoneList.length; index++) {
-            if (pageDoneList[index].id === lastItem.id) {
+            if (pageDoneList[index] === lastItem) {
               lastIndex = index;
             }
           }
@@ -176,8 +182,8 @@ export default {
             accumulator,
             currentValue
           ) {
-            if (!idHash[currentValue.id]) {
-              idHash[currentValue.id] = true;
+            if (!idHash[currentValue]) {
+              idHash[currentValue] = true;
               accumulator.push(currentValue);
             }
             return accumulator;
@@ -216,7 +222,7 @@ export default {
       // 下载中tab
       const completed = list
         .map((item) => {
-          if (DONE_PHASE.includes(item.phase.toUpperCase())) {
+          if (DONE_PHASE.includes(state.all[item].phase.toUpperCase())) {
             return item.id;
           }
         })
@@ -224,7 +230,7 @@ export default {
 
       // 剔除已完成的
       const refreshRunningList = list.filter((item) => {
-        if (ING_PHASE.includes(item.phase.toUpperCase())) {
+        if (ING_PHASE.includes(state.all[item].phase.toUpperCase())) {
           return true;
         }
         return false;
@@ -434,24 +440,28 @@ export default {
           if (!task.params) {
             task.params = {};
           }
-
-          return task;
+          commit('set', task)
+          return task.id;
         });
 
-        if (phaseCheck) {
-          commit("changeTaskInfo", { list, phaseType });
-        }
+        // if (phaseCheck) {
+        //   commit("changeTaskInfo", { list, phaseType });
+        // }
 
-        const ingList = list.filter((v) =>
-          ["PHASE_TYPE_PENDING", "PHASE_TYPE_RUNNING"].includes(v.phase)
+        const ingList = list.filter((id) =>
+          ["PHASE_TYPE_PENDING", "PHASE_TYPE_RUNNING"].includes(state.all[id].phase)
         );
 
         if (phaseCheck) {
-          commit("setTaskExpiresIn", res.expires_in);
+          commit("update", {
+            taskExpiresIn: res.expires_in
+          })
           return ingList;
         }
 
-        commit("setTaskExpiresIn", res.expires_in);
+        commit("update", {
+          taskExpiresIn: res.expires_in
+        })
         commit("setTasks", {
           list,
           refresh,

@@ -12,7 +12,14 @@ export default defineConfig({
     }),
     vue()
   ],
-  build: {
-    base: './'
+  server: {
+    proxy: {
+      // 选项写法
+      '/api': {
+        target: 'http://localhost:5050/',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      },
+    }
   }
 })
