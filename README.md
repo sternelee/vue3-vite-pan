@@ -2,6 +2,12 @@
 
 This template should help get you started developing with Vue 3 and Typescript in Vite.
 
+## 相关使用文档
+
+### [https://vue3js.cn/](https://vue3js.cn/)
+
+### [https://vueuse.org/](https://vueuse.org/)
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur). Make sure to enable `vetur.experimental.templateInterpolationService` in settings!
