@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="当前版本已经过期"
-    v-model="visible"
+    v-model="visibleDialog"
     :show-close="false"
     :close-on-click-modal="false"
     width="520px"
@@ -43,7 +43,11 @@ export default defineComponent({
       return this.userInfo.client_version;
     },
   },
-  watch: {},
+  watch: {
+    visible (val) {
+      this.visibleDialog = val
+    }
+  },
   mounted() {},
   methods: {
     handleClose() {

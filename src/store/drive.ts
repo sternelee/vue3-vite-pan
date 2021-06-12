@@ -54,7 +54,7 @@ export default {
   getters: {},
   mutations: {
     set(state, file) {
-      state.all[file.id] = Object.assign({}, state.all[file.id], file)
+      state.all[file.id] = Object.assign({}, state.all[file.id], file);
     },
     add(state, file) {
       state.home.list.unshift(file);
@@ -73,6 +73,7 @@ export default {
       state,
       { files, space = "", parentId = "", hasMore = false, refresh = false }
     ) {
+      console.log(files, space, parentId, hasMore, refresh);
       state.files.hasMore = hasMore;
       state.files.space = space;
       state.files.parentId = parentId;
@@ -104,6 +105,28 @@ export default {
         pageToken,
       };
     },
+    setTasksDone(state, { refresh, list, pageToken }) {
+      let newList = [];
+      if (refresh) {
+        newList = list;
+      } else {
+        newList = [...state.tasksDone.list, ...list];
+      }
+
+      const idHash = {};
+      newList = newList.reduce(function (accumulator, currentValue) {
+        if (!idHash[currentValue]) {
+          idHash[currentValue] = true;
+          accumulator.push(currentValue);
+        }
+        return accumulator;
+      }, []);
+
+      state.tasksDone = {
+        list: newList,
+        pageToken,
+      };
+    },
     delTasks(state, { ids, type }) {
       if (type === "spec") {
         // 改变任务状态，而非从列表删除，等待下次真实状态返回更新
@@ -124,7 +147,7 @@ export default {
     },
     pauseTasks(state, { ids, type }) {
       state.tasks.list = state.tasks.list.map((k) => {
-        const v = state.all[k]
+        const v = state.all[k];
         for (let id of ids) {
           if (v.id === id && v.params) {
             const spec = '{"phase":"pause"}';
@@ -138,7 +161,7 @@ export default {
     },
     resumeTasks(state, { ids, type }) {
       state.tasks.list = state.tasks.list.map((k) => {
-        const v = state.all[k]
+        const v = state.all[k];
         for (let id of ids) {
           if (v.id === id && v.params) {
             const spec = '{"phase":"running"}';
@@ -384,17 +407,17 @@ export default {
 
       return driveFetch("/drive/v1/files", "GET", newParams).then((res) => {
         if (res && res.files) {
-          files.files = [...files.files, ...res.files];
-          if (!res.next_page_token) {
-            res.next_page_token = "";
-            files.hasMore = false;
-          }
+          const list = res.files.map((file) => {
+            commit("set", file);
+            return file.id;
+          });
+          files.files = [...files.files, ...list];
           files.next_page_token = res.next_page_token;
           commit("setFiles", {
             ...files,
-            space: space,
+            space,
             parentId: parent_id,
-            hasMore: files.hasMore,
+            hasMore: !!res.next_page_token,
             refresh: true,
           });
         }
@@ -407,7 +430,7 @@ export default {
     ) {
       const { target } = rootState.user.userInfo;
       const refresh = params.refresh;
-      const phaseType = params.phase;
+      const phaseType = params.phase || 'ing';
       const phaseCheck = params.phaseCheck || false;
       const limit = params.limit || TASK_PAGE_LIMIT;
       const phaseTypeMap = {
@@ -440,7 +463,7 @@ export default {
           if (!task.params) {
             task.params = {};
           }
-          commit('set', task)
+          commit("set", task);
           return task.id;
         });
 
@@ -448,25 +471,29 @@ export default {
         //   commit("changeTaskInfo", { list, phaseType });
         // }
 
-        const ingList = list.filter((id) =>
-          ["PHASE_TYPE_PENDING", "PHASE_TYPE_RUNNING"].includes(state.all[id].phase)
-        );
-
-        if (phaseCheck) {
-          commit("update", {
-            taskExpiresIn: res.expires_in
-          })
-          return ingList;
-        }
+        // if (phaseCheck) {
+        //   commit("update", {
+        //     taskExpiresIn: res.expires_in,
+        //   });
+        //   return ingList;
+        // }
 
         commit("update", {
-          taskExpiresIn: res.expires_in
-        })
-        commit("setTasks", {
-          list,
-          refresh,
-          pageToken: res.next_page_token || "",
+          taskExpiresIn: res.expires_in,
         });
+        if (phaseType === 'ing') {
+          commit("setTasks", {
+            list,
+            refresh,
+            pageToken: res.next_page_token || "",
+          });
+        } else {
+          commit("setTasksDone", {
+            list,
+            refresh,
+            pageToken: res.next_page_token || "",
+          });
+        }
 
         return list;
       });

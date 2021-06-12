@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="确定要删除该任务吗？"
-    v-model="visible"
+    v-model="visibleDialog"
     width="400px"
     :close-on-click-modal="false"
     custom-class="task-delete-dialog"
@@ -32,6 +32,7 @@ export default defineComponent({
   computed: {},
   watch: {
     visible (val) {
+      this.visibleDialog = val
       if (this.checked) {
         this.checked = false
       }

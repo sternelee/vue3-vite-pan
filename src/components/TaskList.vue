@@ -10,10 +10,10 @@
       </div>
       <div v-else class="task-list__content" ref="list">
         <ul>
-          <task-list-item
+          <TaskListItem
             v-for="item in tasks.list"
             :key="item"
-            :file="item"
+            :tid="item"
             @refresh="refresh"
             @delete="handleDelete"
           />
@@ -30,6 +30,7 @@
 </template>
 <script>
 import { defineComponent } from 'vue'
+import { mapState } from 'vuex'
 import TaskListItem from './TaskListItem.vue'
 import FileEmpty from './FileEmpty.vue'
 import Loading from './Loading.vue'
@@ -62,12 +63,11 @@ export default defineComponent({
     }
   },
   computed: {
-    driveStore () {
-      return this.$store.state.drive
-    },
+    ...mapState('drive', ['tasks', 'tasksDone', 'currentTabId']),
     tasks () {
       return this.driveStore.tasks || {}
     },
+
     hasMore () {
       return !!this.tasks.pageToken
     },
@@ -76,9 +76,6 @@ export default defineComponent({
     },
     hasLogin() {
       return this.curUser.userId !== "0";
-    },
-    tabId () {
-      return this.$store.state.drive.currentTabId;
     }
   },
   watch: {
@@ -127,12 +124,12 @@ export default defineComponent({
 
         this.$emit('delete-success')
 
-        if (this.tabId === 'ing') {
+        if (this.currentTabId === 'ing') {
           this.stat('downloading_delete_btn_click', {
             result: 'success',
             if_delete_file: checked
           })
-        } else if (this.tabId === 'done') {
+        } else if (this.currentTabId === 'done') {
           this.stat('complete_delete_btn_click', {
             result: 'success',
             if_delete_file: checked
@@ -144,12 +141,12 @@ export default defineComponent({
           message: "删除失败"
         });
 
-        if (this.tabId === 'ing') {
+        if (this.currentTabId === 'ing') {
           this.stat('downloading_delete_btn_click', {
             result: 'fail',
             if_delete_file: checked
           })
-        } else if (this.tabId === 'done') {
+        } else if (this.currentTabId === 'done') {
           this.stat('complete_delete_btn_click', {
             result: 'fail',
             if_delete_file: checked

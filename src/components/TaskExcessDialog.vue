@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="温馨提示"
-    v-model="visible"
+    v-model="visibleDialog"
     width="520px"
     center
     custom-class="task-excess-dialog"
@@ -51,6 +51,7 @@ export default defineComponent({
   },
   watch: {
     visible (val) {
+      this.visibleDialog = val
       if (val) {
         this.genQrCode()
       }

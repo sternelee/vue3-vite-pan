@@ -1,13 +1,11 @@
 <template>
   <el-dialog
     title="添加下载链接"
-    v-if="visible"
-    v-model="visible"
+    v-model="visibleDialog"
     width="580px"
     :close-on-click-modal="false"
     :destroy-on-close="true"
     custom-class="nas-task-dialog"
-    @close="handleClose"
   >
     <div class="task-dialog__content">
       <el-input
@@ -32,9 +30,10 @@ import { checkValidLink } from '../utils/util'
 export default defineComponent({
   props: ['visible'],
   components: {},
-  emits: ['close', 'submit'],
+  emits: ['submit'],
   data () {
     return {
+      visibleDialog: false,
       btnText: '确定',
       loading: false,
       value: ''
@@ -43,15 +42,13 @@ export default defineComponent({
   computed: {},
   watch: {
     visible (val) {
+      this.visibleDialog = val
       if (!val) {
         this.value = ''
       }
     }
   },
   methods: {
-    handleClose () {
-      this.$emit('close')
-    },
     async handleParseTask() {
       if (!this.value.trim()) {
         this.$message({

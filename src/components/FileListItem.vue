@@ -23,15 +23,16 @@
 </template>
 <script>
 import { defineComponent } from 'vue'
+import { mapState } from "vuex"
 import { formatSize } from '../utils/util'
 import staticIcons from '../utils/static-icons'
 import { parseTime } from '../utils/filters'
 
 export default defineComponent({
   props: {
-    file: {
-      type: Object,
-      default: () => ({})
+    fid: {
+      type: String,
+      default: ""
     }
   },
   emits: ['open'],
@@ -40,15 +41,17 @@ export default defineComponent({
       checked: false,
     }
   },
-  filters: {
+  computed: {
+    ...mapState('drive', ['all']),
+    file () {
+      return this.all[this.fid]
+    },
+    displayIcon () {
+      return this.file.thumbnail_link || this.file.icon_link || staticIcons.other
+    },
     modifiedTime () {
       return parseTime(this.file.modified_time, '{y}-{m}-{d} {h}:{i}')
     },
-  },
-  computed: {
-    displayIcon () {
-      return this.file.thumbnail_link || this.file.icon_link || staticIcons.other
-    }
   },
   methods: {
     formatSize,

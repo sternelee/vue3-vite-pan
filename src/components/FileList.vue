@@ -10,10 +10,10 @@
         </div>
         <div v-else class="nas-task-list__content" ref="list">
           <ul>
-            <file-list-item
+            <FileListItem
               v-for="item in files.list"
-              :key="item.id"
-              :file="item"
+              :key="item"
+              :fid="item"
               @refresh="refresh"
               @open='$emit("open",item)'
             />
@@ -54,12 +54,7 @@ export default defineComponent({
     }
   },
   computed: {
-    driveStore () {
-      return this.$store.state.drive
-    },
-    files () {
-      return this.driveStore.files || {}
-    },
+    ...mapState('drive', ['files']),
     space() {
       return this.files.space
     },

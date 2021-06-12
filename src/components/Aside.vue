@@ -88,7 +88,7 @@
       </div>
       <el-dialog
         title="限制最大下载速度"
-        v-model="visible"
+        v-model="visibleDialog"
         width="680px"
         destroy-on-close
         custom-class="nas-speed-dialog"
@@ -211,7 +211,11 @@ export default defineComponent({
       return this.$store.state.drive.currentTabId;
     }
   },
-  watch: {},
+  watch: {
+    visible (val) {
+      this.visibleDialog = val
+    }
+  },
   async mounted() {},
   methods: {
     stat(action, data) {

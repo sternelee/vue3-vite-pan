@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="迅雷"
-    v-model="visible"
+    v-model="visibleDialog"
     width="520px"
     center
     custom-class="about-dialog"
@@ -35,6 +35,11 @@ export default defineComponent({
   computed: {
     userInfo() {
       return this.$store.state.user.userInfo || {};
+    }
+  },
+  watch: {
+    visible (val) {
+      this.visibleDialog = val
     }
   },
   mounted() {},

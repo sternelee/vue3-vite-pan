@@ -1,8 +1,7 @@
 <template>
   <el-dialog
     title="添加下载链接"
-    v-if="visible"
-    v-model="visible"
+    v-model="visibleDialog"
     width="580px"
     :close-on-click-modal="false"
     custom-class="nas-task-dialog"
@@ -105,7 +104,11 @@ export default defineComponent({
       return this.treeNodePath || this.deviceInfo.path || "--"
     }
   },
-  watch: {},
+  watch: {
+    visible (val) {
+      this.visibleDialog = val
+    }
+  },
   filters: {
     displayIcon(info) {
       if (info.meta && info.meta.icon) {

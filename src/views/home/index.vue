@@ -33,7 +33,7 @@
           @delete-success="handleTaskDeleteSuccess"
         />
         <FileList
-          v-if="tabId==='file' || tabId ==='devicefile'"
+          v-if="tabId === 'file' || tabId === 'devicefile'"
           :title="fileListTitle(tabId === 'file' ? '网盘文件' : '设备文件')"
           :phase="tabId"
           :files="files"
@@ -368,11 +368,11 @@ export default defineComponent({
         this.getTasks({ phase: this.tabId, refresh: true,loading:true });
         this.checkTasks();
       } else {
-        var space=""
+        let space = ""
         if(this.tabId === "devicefile"){
           space = this.userInfo.target
         }
-        this.openFiles={}
+        this.openFiles = {}
         this.getFiles({ space:space,parent_id:"", refresh: true,loading:true });
         this.clearTaskTimers();
       }

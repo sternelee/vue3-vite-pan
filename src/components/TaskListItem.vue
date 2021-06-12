@@ -7,12 +7,12 @@
             <img :src="iconLink" alt="图标" />
           </div>
           <div class="task-item__info">
-            <div class="task-item__name" :title="info.id">
-              {{ info.file_name || info.name || info.id }}
+            <div class="task-item__name" :title="taskName">
+              {{ taskName }}
             </div>
             <div
               class="task-item__desc"
-              v-if="info.phase === 'PHASE_TYPE_ERROR'"
+              v-if="task.phase === 'PHASE_TYPE_ERROR'"
             >
               <span
                 class="task-item__status task-item__status-error"
@@ -22,19 +22,19 @@
             <div class="task-item__desc" v-else>
               <span
                 v-if="
-                  info.phase === 'PHASE_TYPE_RUNNING' ||
-                    info.phase === 'PHASE_TYPE_PENDING'
+                  task.phase === 'PHASE_TYPE_RUNNING' ||
+                    task.phase === 'PHASE_TYPE_PENDING'
                 "
                 class="task-item__size"
               >
                 {{
                   formatSize(
-                    (info.file_size * (info.progress || 0)) / 100 || 0
+                    (task.file_size * (task.progress || 0)) / 100 || 0
                   )
-                }}/{{ formatSize(info.file_size || 0) }}
+                }}/{{ formatSize(task.file_size || 0) }}
               </span>
               <span v-else class="task-item__size">
-                {{ formatSize(info.file_size || 0) }}
+                {{ formatSize(task.file_size || 0) }}
               </span>
               <span class="task-item__date"> {{ taskDate }}</span>
               <i class="task-item__date   el-icon-s-data" title="已经抱团"
@@ -50,7 +50,7 @@
               v-if="hasSpeed"
             >
               <el-progress
-                :percentage="info.progress"
+                :percentage="task.progress"
                 :stroke-width="4"
                 :show-text="false"
               />
@@ -62,8 +62,8 @@
             class="non-vip-icon"
             v-if="
               !vipData.isVip &&
-                (info.phase === 'PHASE_TYPE_RUNNING' ||
-                  info.phase === 'PHASE_TYPE_PENDING')
+                (task.phase === 'PHASE_TYPE_RUNNING' ||
+                  task.phase === 'PHASE_TYPE_PENDING')
             "
             href="paycenter"
             target="_blank"
@@ -75,31 +75,31 @@
           <i
             class="iconfont icon-pause"
             v-if="pauseIconVisible"
-            @click="pause(info)"
+            @click="pause(task)"
           />
           <i
             class="iconfont icon-down"
-            @click="download(info)"
+            @click="download(task)"
             v-if="downloadIconVisible"
           />
           <i
             class="iconfont icon-loading"
             v-if="
-              (info.phase === 'PHASE_TYPE_RUNNING' ||
-                info.phase === 'PHASE_TYPE_PENDING' ||
-                info.phase === 'PHASE_TYPE_PAUSED') &&
+              (task.phase === 'PHASE_TYPE_RUNNING' ||
+                task.phase === 'PHASE_TYPE_PENDING' ||
+                task.phase === 'PHASE_TYPE_PAUSED') &&
                 actionLoading &&
                 actionSpecStatus !== 'delete'
             "
           />
           <i
             :class="`iconfont icon-refresh ${refreshFlag && 'active'}`"
-            @click="refresh(info)"
-            v-if="info.phase === 'PHASE_TYPE_ERROR'"
+            @click="refresh(task)"
+            v-if="task.phase === 'PHASE_TYPE_ERROR'"
           />
           <i
             class="iconfont icon-cross"
-            @click="remove(info)"
+            @click="remove(task)"
             v-if="actionSpecStatus !== 'delete'"
           />
           <i class="iconfont icon-loading icon-loading-delete" v-else />
@@ -118,7 +118,7 @@ import { parseTime } from "../utils/filters";
 
 export default defineComponent({
   props: {
-    file: {
+    tid: {
       type: String,
       default: ""
     }
@@ -132,8 +132,11 @@ export default defineComponent({
   },
   computed: {
     ...mapState('drive', ['all']),
-    info () {
-      return this.all[this.file]
+    task () {
+      return this.all[this.tid]
+    },
+    taskName () {
+      return this.task.file_name || this.task.name || this.task.id
     },
     curUser() {
       return this.$store.state.user.curUser;
@@ -142,9 +145,9 @@ export default defineComponent({
       return this.curUser.vipData || {};
     },
     actionSpecStatus() {
-      if (this.info.params && this.info.params.spec) {
+      if (this.task.params && this.task.params.spec) {
         try {
-          const specStatus = JSON.parse(this.info.params.spec);
+          const specStatus = JSON.parse(this.task.params.spec);
           return specStatus.phase;
         } catch (e) {
           return "";
@@ -153,9 +156,9 @@ export default defineComponent({
       return "";
     },
     actionStatus() {
-      if (this.info.params && this.info.params.status) {
+      if (this.task.params && this.task.params.status) {
         try {
-          const phaseStatus = JSON.parse(this.info.params.status);
+          const phaseStatus = JSON.parse(this.task.params.status);
           return phaseStatus.phase;
         } catch (e) {
           return "";
@@ -169,9 +172,9 @@ export default defineComponent({
         this.actionSpecStatus !== "" &&
         this.actionSpecStatus !== this.actionStatus;
       const case2 =
-        (this.info.phase === "PHASE_TYPE_RUNNING" ||
-          this.info.phase === "PHASE_TYPE_PENDING" ||
-          this.info.phase === "PHASE_TYPE_PAUSED") &&
+        (this.task.phase === "PHASE_TYPE_RUNNING" ||
+          this.task.phase === "PHASE_TYPE_PENDING" ||
+          this.task.phase === "PHASE_TYPE_PAUSED") &&
         this.actionStatus === "" &&
         (this.actionSpecStatus === "pause" ||
           this.actionSpecStatus === "running");
@@ -180,31 +183,31 @@ export default defineComponent({
     },
     vipTeamJoined() {
       return (
-        this.info.phase === "PHASE_TYPE_RUNNING" &&
-        this.info.params.team_isjoined=== "true"
+        this.task.phase === "PHASE_TYPE_RUNNING" &&
+        this.task.params.team_isjoined=== "true"
       )
     },
     vipSpeed() {
       return (
         this.actionStatus !== "pause" &&
-        this.info.phase === "PHASE_TYPE_RUNNING" &&
+        this.task.phase === "PHASE_TYPE_RUNNING" &&
         this.vipData.isVip &&
-        !this.actionLoading && (+this.info.params.speedup_count > 0)
+        !this.actionLoading && (+this.task.params.speedup_count > 0)
       );
     },
     pauseIconVisible() {
       const iconVisible =
-        (this.info.phase === "PHASE_TYPE_PENDING" ||
-          this.info.phase === "PHASE_TYPE_RUNNING") &&
+        (this.task.phase === "PHASE_TYPE_PENDING" ||
+          this.task.phase === "PHASE_TYPE_RUNNING") &&
         this.actionStatus !== "pause" &&
         !this.actionLoading;
       return iconVisible;
     },
     downloadIconVisible() {
       const iconVisible =
-        (this.info.phase === "PHASE_TYPE_PENDING" ||
-          this.info.phase === "PHASE_TYPE_RUNNING" ||
-          this.info.phase === "PHASE_TYPE_PAUSED") &&
+        (this.task.phase === "PHASE_TYPE_PENDING" ||
+          this.task.phase === "PHASE_TYPE_RUNNING" ||
+          this.task.phase === "PHASE_TYPE_PAUSED") &&
         this.actionStatus === "pause" &&
         !this.actionLoading;
       return iconVisible;
@@ -215,19 +218,19 @@ export default defineComponent({
         return `<i>删除中</i>`;
       }
 
-      if (this.info.phase === "PHASE_TYPE_ERROR") {
-        let msg = this.info.message;
-        if (this.info.params && this.info.params.error) {
-          msg = `${msg}【${this.info.params.error}】`;
+      if (this.task.phase === "PHASE_TYPE_ERROR") {
+        let msg = this.task.message;
+        if (this.task.params && this.task.params.error) {
+          msg = `${msg}【${this.task.params.error}】`;
         }
 
         return msg;
       }
 
-      if (this.info.phase === "PHASE_TYPE_COMPLETE") {
-        let msg = taskPhaseCode[this.info.phase];
-        if (this.info.params && this.info.params.error) {
-          msg = `${msg} [${this.info.params.error}]`;
+      if (this.task.phase === "PHASE_TYPE_COMPLETE") {
+        let msg = taskPhaseCode[this.task.phase];
+        if (this.task.params && this.task.params.error) {
+          msg = `${msg} [${this.task.params.error}]`;
         }
         return msg;
       }
@@ -242,49 +245,49 @@ export default defineComponent({
         }
       }
 
-      if (this.info.phase === 'PHASE_TYPE_PAUSED') {
-        return taskPhaseCode[this.info.phase];
+      if (this.task.phase === 'PHASE_TYPE_PAUSED') {
+        return taskPhaseCode[this.task.phase];
       }
 
-      if (this.info.phase === "PHASE_TYPE_RUNNING") {
+      if (this.task.phase === "PHASE_TYPE_RUNNING") {
         // 如果updated_time大于15分钟，则不显示下载速度
         const currentTime = new Date().getTime();
-        const updatedTime = new Date(this.info.updated_time).getTime();
+        const updatedTime = new Date(this.task.updated_time).getTime();
         const span = (currentTime - updatedTime) / 1000;
         if (span > 15 * 60) {
           return "--";
         }
         var speedup_speed = "(+0KB/s)"
-        if(this.info.params && this.info.params["speedup_speed"] !== undefined){
-          var new_speed=this.formatSize(this.info.params["speedup_speed"]);
+        if(this.task.params && this.task.params["speedup_speed"] !== undefined){
+          var new_speed=this.formatSize(this.task.params["speedup_speed"]);
           if(new_speed !== 0 ){
             speedup_speed = "(+"+new_speed+"/s)";
           }
         }
-        if(!this.vipData.isVip || this.info.type !=="user#download-url"){
+        if(!this.vipData.isVip || this.task.type !=="user#download-url"){
           speedup_speed=""
         }
 
-        if (this.info.params && this.info.params["speed"] !== undefined) {
-          const speed = this.formatSize(this.info.params["speed"]);
+        if (this.task.params && this.task.params["speed"] !== undefined) {
+          const speed = this.formatSize(this.task.params["speed"]);
           return speed === 0 ? (`${speed}KB/s`+speedup_speed) : (`${speed}/s`+speedup_speed);
         } else {
           return `0KB/s`;
         }
       }
 
-      return taskPhaseCode[this.info.phase];
+      return taskPhaseCode[this.task.phase];
     },
     hasSpeed () {
-      return this.info.phase === 'PHASE_TYPE_RUNNING' ||
-        this.info.phase === 'PHASE_TYPE_PENDING' ||
-        this.info.phase === 'PHASE_TYPE_PAUSED'
+      return this.task.phase === 'PHASE_TYPE_RUNNING' ||
+        this.task.phase === 'PHASE_TYPE_PENDING' ||
+        this.task.phase === 'PHASE_TYPE_PAUSED'
     },
     iconLink () {
-      return this.info.thumbnail_link || this.info.icon_link || staticIcons.other;
+      return this.task.thumbnail_link || this.task.icon_link || staticIcons.other;
     },
     taskDate () {
-      return parseTime(this.info.created_time, "{y}-{m}-{d} {h}:{i}")
+      return parseTime(this.task.created_time, "{y}-{m}-{d} {h}:{i}")
     }
   },
   methods: {
@@ -292,15 +295,15 @@ export default defineComponent({
     stat(action, data) {
       this.$stat("remote_control_pc", action, data);
     },
-    remove(info) {
-      this.$emit("delete", info);
+    remove(task) {
+      this.$emit("delete", task);
     },
-    async pause(info) {
+    async pause(task) {
       try {
         const params = {
-          id: info.id,
-          space: info.space,
-          type: info.type,
+          id: task.id,
+          space: task.space,
+          type: task.type,
           action: "pause"
         };
         await this.$store.dispatch("drive/operateTask", params);
@@ -321,11 +324,11 @@ export default defineComponent({
         });
       }
     },
-    async download(info) {
+    async download(task) {
       const params = {
-        id: info.id,
-        space: info.space,
-        type: info.type,
+        id: task.id,
+        space: task.space,
+        type: task.type,
         action: "running"
       };
 
@@ -350,7 +353,7 @@ export default defineComponent({
         });
       }
     },
-    async refresh(info) {
+    async refresh(task) {
       this.$confirm("确定要重新下载文件吗？", "", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -361,8 +364,8 @@ export default defineComponent({
           try {
             // delete before recreating
             const delParams = {
-              ids: [info.id],
-              space: info.space
+              ids: [task.id],
+              space: task.space
             };
 
             const res = await this.$store.dispatch(
@@ -371,14 +374,14 @@ export default defineComponent({
             );
 
             this.refreshFlag = true;
-            if (info.params && info.params.url) {
-              const urls = [info.params.url];
+            if (task.params && task.params.url) {
+              const urls = [task.params.url];
               const resource = [
                 {
-                  name: info.name,
-                  file_size: info.file_size,
-                  file_name: info.file_name,
-                  file_count: info.params.sub_file_count || "1"
+                  name: task.name,
+                  file_size: task.file_size,
+                  file_name: task.file_name,
+                  file_count: task.params.sub_file_count || "1"
                 }
               ];
 

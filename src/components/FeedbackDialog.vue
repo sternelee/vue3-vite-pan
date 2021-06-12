@@ -2,7 +2,7 @@
   <el-dialog
     title="意见反馈"
     v-if="visible"
-    v-model="visible"
+    v-model="visibleDialog"
     width="580px"
     :close-on-click-modal="false"
     :destroy-on-close="true"
@@ -39,6 +39,7 @@ export default defineComponent({
   computed: {},
   watch: {
     visible (val) {
+      this.visibleDialog = val
       if (!val) {
         this.value = ''
       }
