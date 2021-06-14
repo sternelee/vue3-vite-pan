@@ -25,6 +25,11 @@ export default {
       userId: "0",
     },
   }),
+  getters: {
+    vipData(state) {
+      return state.curUser.vipData || {};
+    },
+  },
   mutations: {
     setUserInfo(state, userInfo) {
       state.userInfo = userInfo;

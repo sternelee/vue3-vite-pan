@@ -2,7 +2,7 @@
   <el-dialog
     title="超过同时登录设备上限"
     width="520px"
-    v-model="visibleDialog"
+    v-model="isVisible"
     :show-close="false"
     :close-on-click-modal="false"
     center
@@ -33,12 +33,13 @@ export default defineComponent({
   emits: ['close', 'logout'],
   data() {
     return {
+      isVisible: false,
       expired: false
     };
   },
   watch: {
     visible (val) {
-      this.visibleDialog = val
+      this.isVisible = val
     }
   },
   mounted() {},

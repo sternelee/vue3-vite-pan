@@ -5,10 +5,12 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import { stat } from './utils/stat'
+import VueSee from './plugins/vue-see'
 
 const app = createApp(App)
 
 app.use(ElementPlus)
+app.directive(VueSee.name, VueSee.directive)
 app.use(router)
 app.use(store)
 app.mount('#app')

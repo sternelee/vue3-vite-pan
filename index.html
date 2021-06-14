@@ -4,10 +4,27 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>云盘</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <script>
+      (function() {
+        // 埋点
+        window.xla2 = window.xla2 || [];
+        window.xla2.push({
+          type: "config",
+          appid: 30043,
+          secret: "9b07413a89121e920698fd0e06a1691e"
+        });
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "//res-etl-ssl.xunlei.com/v2/auxiliary/xla2.min.js";
+        var x = document.getElementsByTagName("script")[0];
+        x.parentNode.insertBefore(s, x);
+      })();
+    </script>
   </body>
 </html>

@@ -1,0 +1,247 @@
+@import "mixins/mixins";
+
+@font-face {
+  font-family: "thunder-icon";
+  src: url("fonts/thunder-icons.woff?t=1555056648955") format("truetype");
+}
+
+[class^="td-icon-"],
+[class*=" td-icon-"] {
+  font-family: "thunder-icon" !important;
+  font-size: 16px;
+  font-style: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// iconfont 图标集
+
+.td-icon-load:before {
+  content: "\e615";
+}
+
+.td-icon-close-browser:before {
+  content: "\e61d";
+}
+
+.td-icon-arrow-line:before {
+  content: "\e61e";
+}
+
+.td-icon-arrow-drop:before {
+  content: "\e622";
+}
+
+.td-icon-rename:before {
+  content: "\e623";
+}
+
+.td-icon-success:before {
+  content: "\e638";
+}
+
+.td-icon-error:before {
+  content: "\e637";
+}
+
+.td-icon-question:before {
+  content: "\e63a";
+}
+
+.td-icon-warning:before {
+  content: "\e639";
+}
+
+.td-icon-arrow-left:before {
+  content: "\e651";
+}
+
+.td-icon-arrow-right:before {
+  content: "\e652";
+}
+
+.td-icon-refresh:before {
+  content: "\e653";
+}
+
+.td-icon-security:before {
+  content: "\e67e";
+}
+
+.td-icon-sequence:before {
+  content: "\e680";
+}
+
+.td-icon-info:before {
+  content: "\e685";
+}
+
+.td-icon-choose:before {
+  content: "\e686";
+}
+
+.td-icon-more-right:before {
+  content: "\e687";
+}
+
+.td-icon-search:before {
+  content: "\e696";
+}
+
+.td-icon-fav:before {
+  content: "\e694";
+}
+
+.td-icon-fav1:before {
+  content: "\e695";
+}
+
+.td-icon-setting:before {
+  content: "\e6c4";
+}
+
+.td-icon-arrow-up:before {
+  content: "\e6c5";
+}
+
+.td-icon-arrow-down:before {
+  content: "\e6c6";
+}
+
+.td-icon-more:before {
+  content: "\e71b";
+}
+
+.td-icon-loading:before {
+  content: "\e71d";
+}
+
+.td-icon-plus:before {
+  content: "\e740";
+}
+
+.td-icon-minus:before {
+  content: "\e741";
+}
+
+.td-icon-prev:before {
+  content: "\e747";
+}
+
+.td-icon-next:before {
+  content: "\e748";
+}
+
+
+// 自定义的样式
+
+@include b(icon-svg) {
+  width: 20px;
+}
+
+.td-icon-close:before {
+  content: "\e61d";
+}
+
+.td-icon-sequence {
+  color: var(--color-primary-gray-1);
+
+  &.is-ascending {
+    background-image: linear-gradient(to bottom,
+      var(--color-default) 50%,
+      var(--color-primary-gray-1) 51%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  &.is-descending {
+    background-image: linear-gradient(to bottom,
+      var(--color-primary-gray-1) 50%,
+      var(--color-default) 51%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.td-icon-star {
+  position: relative;
+}
+
+.td-icon-star:before {
+  content: "\e695";
+  color: #b3b3b3;
+}
+
+.td-icon-loading {
+  display: inline-block;
+  animation: td-load 1.5s both linear infinite;
+}
+
+.td-icon-loading:before {
+  content: "\e71d";
+}
+
+.td-icon-user-line:before {
+  content: "\e74a";
+}
+
+.td-icon-user:before {
+  content: "\e74b";
+}
+
+.td-icon-load {
+  animation: td-load 1.5s both linear infinite;
+}
+
+.xly-icon-more-down:before {
+  content: "\e76a";
+}
+
+@keyframes td-load {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.td-icon-restore:before {
+  content: "\e798";
+}
+
+.td-icon-maximize:before {
+  content: "\e799";
+}
+
+.td-icon-minimize:before {
+  content: "\e79a";
+}
+
+.td-icon-magnify:before {
+  content: "\e794";
+}
+
+.td-icon-minify:before {
+  content: "\e795";
+}
+
+.td-icon-ratio:before {
+  content: "\e796";
+}
+
+.td-icon-ratio-optimal:before {
+  content: "\e797";
+}
+
+.td-icon-download:before {
+  content: "\e79b";
+}
+
+
+/* svg */
+.td-icon-svg-file {
+  height: 17px;
+}

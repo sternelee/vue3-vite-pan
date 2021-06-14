@@ -2,7 +2,7 @@
   <el-dialog
     title="意见反馈"
     v-if="visible"
-    v-model="visibleDialog"
+    v-model="isVisible"
     width="580px"
     :close-on-click-modal="false"
     :destroy-on-close="true"
@@ -31,6 +31,7 @@ export default defineComponent({
   emits: ['close'],
   data () {
     return {
+      isVisible: false,
       btnText: '确定',
       loading: false,
       value: ''
@@ -39,7 +40,7 @@ export default defineComponent({
   computed: {},
   watch: {
     visible (val) {
-      this.visibleDialog = val
+      this.isVisible = val
       if (!val) {
         this.value = ''
       }

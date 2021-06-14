@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="迅雷"
-    v-model="visibleDialog"
+    v-model="isVisible"
     width="520px"
     center
     custom-class="about-dialog"
@@ -27,6 +27,7 @@ export default defineComponent({
   emits: ['close'],
   data() {
     return {
+      isVisible: false,
       error: false,
       loading: false,
       url: ''
@@ -39,7 +40,7 @@ export default defineComponent({
   },
   watch: {
     visible (val) {
-      this.visibleDialog = val
+      this.isVisible = val
     }
   },
   mounted() {},

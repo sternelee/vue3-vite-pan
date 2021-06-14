@@ -1,53 +1,58 @@
 <template>
-  <div>
-    <td-dialog
-      :visible="visible" custom-class="dialog-folder" @close="cancel"
-      class="pan-dialog-cover"
-    >
-      <template v-slot:header>
-        <h3>{{ type | displayTitle }}</h3>
-      </template>
-      <div class="file-tree-body-container">
-        <td-tree-plus
-          :data="data"
-          :lazy="true"
-          :load="loadFunction"
-          :levelPadding="levelPadding"
-          iconClass="file-tree-icon"
-          ref="tree"
-          :bindingKeyGenerator="bindingKeyGenerator"
-          @create="handleCreate"
-          @changeChosenNode="changeChosenNode"
-        />
-      </div>
-      <template v-slot:footer>
-        <div class="file-tree-btn-container">
-          <div class="file-tree-btn__new">
-            <a @click="handleCreateNode">新建文件夹</a>
-          </div>
-          <div class="file-tree-btn__normal">
-            <a @click="confirm">确定</a>
-            <a @click="cancel">取消</a>
-          </div>
+  <el-dialog
+    v-model="isVisible"
+    custom-class="dialog-folder"
+    @close="cancel"
+    :width="600"
+    :title="displayTitle(type)"
+  >
+    <div class="file-tree-body-container">
+      <TdTreeNodePlus
+        :data="treeData"
+        :lazy="true"
+        :load="loadFunction"
+        :levelPadding="levelPadding"
+        iconClass="file-tree-icon"
+        ref="tree"
+        :bindingKeyGenerator="bindingKeyGenerator"
+        @create="handleCreate"
+        @changeChosenNode="changeChosenNode"
+      />
+    </div>
+    <template v-slot:footer>
+      <div class="file-tree-btn-container">
+        <div class="file-tree-btn__new">
+          <el-button @click="handleCreateNode" size="mini">新建文件夹</el-button>
         </div>
-      </template>
-    </td-dialog>
-  </div>
+        <div class="file-tree-btn__normal">
+          <el-button @click="confirm" type="primary" size="mini">确定</el-button>
+          <el-button @click="cancel" size="mini">取消</el-button>
+        </div>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import { mapState } from 'vuex'
 import staticIcons from '@/utils/static-icons'
+import TdTreeNodePlus from '@/components/TreePlus.vue'
 
 export default defineComponent({
-  props: ['data', 'visible', 'type'],
+  props: ['visible', 'type'],
   data () {
     return {
+      isVisible: false,
       levelPadding: 20,
       val: '',
       filePathArray: ['我的云盘'],
-      parentId: ''
+      parentId: '',
+      defaultProps: {
+        label: 'label',
+        children: 'children',
+        isLeaf: 'leaf'
+      },
     }
   },
   computed: {
@@ -56,7 +61,45 @@ export default defineComponent({
       return this.userInfo.target;
     },
   },
-  filters: {
+  components: {
+    TdTreeNodePlus
+  },
+  setup () {
+    const treeData = reactive([
+      {
+        id: '',
+        title: '我的云盘',
+        icon: staticIcons.dir,
+        path: '',
+      }
+    ])
+    return {
+      treeData
+    }
+  },
+  watch: {
+    visible (val) {
+      this.isVisible = val
+    }
+  },
+  methods: {
+    async loadNode(node, resolve) {
+      // console.log(node)
+      if (node.level === 0) {
+        return resolve([{ name: '我的云盘' }]);
+      }
+      const data = await this.$store.dispatch('drive/loadFolders', { space: this.target })
+      resolve(data)
+    },
+    async nodeClick(node) {
+      console.log(node)
+    },
+    disableFunction (node) {
+      return false
+    },
+    bindingKeyGenerator (node) {
+      return node.id
+    },
     displayTitle (type) {
       const typeMap = {
         0: '复制到',
@@ -64,21 +107,6 @@ export default defineComponent({
         2: '选择保存位置'
       }
       return typeMap[type]
-    }
-  },
-  mounted () {
-    const tree = this.$refs.tree
-    const treeChildren = tree.$children
-    //const chosenNode = treeChildren[0]
-    //this.$refs.tree.chosenNode = null
-    this.changeChosenNode(this.$refs.tree.chosenNode)
-  },
-  methods: {
-    disableFunction (node) {
-      return false
-    },
-    bindingKeyGenerator (node) {
-      return node.id
     },
     handleCreate ({ chosenNode, content }) {
       if (!content.trim()) {
@@ -184,23 +212,18 @@ export default defineComponent({
 
 <style lang="scss">
 $active-hover-color: #619bff;
-.td-cover {
-  z-index: 2300;
-  /* background: rgba(0,0,0,0.4); */
-}
 .file-tree-body-container .td-tree-node__content {
   display: flex;
   align-items: center;
 }
-.td-message {
-  font-size: 14px;
-}
 .dialog-folder {
-  width: 600PX;
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: -270px;
+  .el-dialog__body {
+    padding: 0px 20px;
+  }
 
   .td-button {
     width: 80%;
@@ -225,22 +248,30 @@ $active-hover-color: #619bff;
   background-size: contain;
 }
 
-.td-tree-node__image-icon {
-  width: 16PX;
-  height: 16PX;
-  margin: 0 2PX 0 6PX;
-  background-size: contain;
-}
-
-.td-tree-node__label {
-  margin: 0 7PX;
-  font-size: 12PX;
-  color: var(--color-default);
+.td-tree-node {
+  display: flex;
+  align-items: center;
+  &__image-icon {
+    width: 16PX;
+    height: 16PX;
+    margin: 0 2PX 0 6PX;
+    background-size: contain;
+    display: inline-block;
+  }
+  &__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    margin: 0 7PX;
+    font-size: 12PX;
+    color: var(--color-default);
+  }
 }
 
 .file-tree-body-container {
   height: 240PX;
-  margin: 12PX 24PX;
+  // margin: 12PX 24PX;
   padding: 1PX 0PX;
   border: 1PX solid var(--color-border);
   border-radius: 4PX;
@@ -305,7 +336,6 @@ $active-hover-color: #619bff;
     display: flex;
     align-items: center;
     width: 100%;
-    margin: 0 24PX;
   }
 
   &__new {

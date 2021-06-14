@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="温馨提示"
-    v-model="visibleDialog"
+    v-model="isVisible"
     width="520px"
     center
     custom-class="task-excess-dialog"
@@ -44,6 +44,7 @@ export default defineComponent({
   emits: ['close', 'logout'],
   data() {
     return {
+      isVisible: false,
       error: false,
       loading: false,
       url: ''
@@ -51,7 +52,7 @@ export default defineComponent({
   },
   watch: {
     visible (val) {
-      this.visibleDialog = val
+      this.isVisible = val
       if (val) {
         this.genQrCode()
       }

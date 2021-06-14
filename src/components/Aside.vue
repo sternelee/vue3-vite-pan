@@ -88,7 +88,7 @@
       </div>
       <el-dialog
         title="限制最大下载速度"
-        v-model="visibleDialog"
+        v-model="visible"
         width="680px"
         destroy-on-close
         custom-class="nas-speed-dialog"
@@ -116,10 +116,12 @@
             </div>
           </div>
         </div>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="visible = false">取 消</el-button>
-          <el-button type="primary" @click="handleSpeedSubmit">确 定</el-button>
-        </div>
+        <template #footer>
+          <div>
+            <el-button @click="visible = false">取 消</el-button>
+            <el-button type="primary" @click="handleSpeedSubmit">确 定</el-button>
+          </div>
+        </template>
       </el-dialog>
       <about-dialog :visible="aboutVisible" @close="handleAboutClose" />
     </div>
@@ -171,6 +173,7 @@ export default defineComponent({
   emits: ['login', 'add-task', 'change-tab'],
   data() {
     return {
+      isVisible: false,
       defaultAvatar,
       userPanelVisible: false,
       aboutVisible: false,
@@ -209,11 +212,6 @@ export default defineComponent({
     },
     tabId () {
       return this.$store.state.drive.currentTabId;
-    }
-  },
-  watch: {
-    visible (val) {
-      this.visibleDialog = val
     }
   },
   async mounted() {},
@@ -368,6 +366,7 @@ export default defineComponent({
   position: relative;
   width: 200px;
   min-width: 120px;
+  min-height: 600px;
   flex-shrink: 0;
   background: linear-gradient(
     to bottom,

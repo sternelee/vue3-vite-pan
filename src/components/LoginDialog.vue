@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="扫码登录"
-    v-model="visibleDialog"
+    v-model="isVisible"
     width="520px"
     center
     :close-on-click-modal="false"
@@ -63,6 +63,7 @@ export default defineComponent({
   emits: ['close', 'login-success'],
   data() {
     return {
+      isVisible: false,
       loading: true,
       url: "",
       scanStatus: "",
@@ -72,7 +73,7 @@ export default defineComponent({
   },
   watch: {
     visible(val) {
-      this.visibleDialog = val
+      this.isVisible = val
       if (val) {
         this.genQrCode();
         this.stat("login_2dcode_pop_show");

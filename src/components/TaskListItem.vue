@@ -23,7 +23,7 @@
               <span
                 v-if="
                   task.phase === 'PHASE_TYPE_RUNNING' ||
-                    task.phase === 'PHASE_TYPE_PENDING'
+                  task.phase === 'PHASE_TYPE_PENDING'
                 "
                 class="task-item__size"
               >
@@ -37,7 +37,9 @@
                 {{ formatSize(task.file_size || 0) }}
               </span>
               <span class="task-item__date"> {{ taskDate }}</span>
-              <i class="task-item__date   el-icon-s-data" title="已经抱团"
+              <i
+                class="task-item__date el-icon-s-data"
+                title="已经抱团"
                 v-if="vipTeamJoined"
               ></i>
               <span
@@ -45,10 +47,7 @@
                 v-html="phaseTxt"
               ></span>
             </div>
-            <div
-              class="task-item__speed"
-              v-if="hasSpeed"
-            >
+            <div class="task-item__speed" v-if="hasSpeed">
               <el-progress
                 :percentage="task.progress"
                 :stroke-width="4"
@@ -62,8 +61,8 @@
             class="non-vip-icon"
             v-if="
               !vipData.isVip &&
-                (task.phase === 'PHASE_TYPE_RUNNING' ||
-                  task.phase === 'PHASE_TYPE_PENDING')
+              (task.phase === 'PHASE_TYPE_RUNNING' ||
+                task.phase === 'PHASE_TYPE_PENDING')
             "
             href="paycenter"
             target="_blank"
@@ -88,8 +87,8 @@
               (task.phase === 'PHASE_TYPE_RUNNING' ||
                 task.phase === 'PHASE_TYPE_PENDING' ||
                 task.phase === 'PHASE_TYPE_PAUSED') &&
-                actionLoading &&
-                actionSpecStatus !== 'delete'
+              actionLoading &&
+              actionSpecStatus !== 'delete'
             "
           />
           <i
@@ -109,8 +108,8 @@
   </li>
 </template>
 <script>
-import { defineComponent } from 'vue'
-import { mapState } from 'vuex'
+import { defineComponent } from "vue";
+import { mapState } from "vuex";
 import { formatSize } from "../utils/util";
 import { taskPhaseCode } from "../utils/code-res";
 import staticIcons from "../utils/static-icons";
@@ -120,23 +119,23 @@ export default defineComponent({
   props: {
     tid: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
-  emits: ['delete'],
+  emits: ["delete"],
   data() {
     return {
       refreshFlag: false,
-      loading: false
+      loading: false,
     };
   },
   computed: {
-    ...mapState('drive', ['all']),
-    task () {
-      return this.all[this.tid]
+    ...mapState("drive", ["all"]),
+    task() {
+      return this.all[this.tid];
     },
-    taskName () {
-      return this.task.file_name || this.task.name || this.task.id
+    taskName() {
+      return this.task.file_name || this.task.name || this.task.id;
     },
     curUser() {
       return this.$store.state.user.curUser;
@@ -184,15 +183,16 @@ export default defineComponent({
     vipTeamJoined() {
       return (
         this.task.phase === "PHASE_TYPE_RUNNING" &&
-        this.task.params.team_isjoined=== "true"
-      )
+        this.task.params.team_isjoined === "true"
+      );
     },
     vipSpeed() {
       return (
         this.actionStatus !== "pause" &&
         this.task.phase === "PHASE_TYPE_RUNNING" &&
         this.vipData.isVip &&
-        !this.actionLoading && (+this.task.params.speedup_count > 0)
+        !this.actionLoading &&
+        +this.task.params.speedup_count > 0
       );
     },
     pauseIconVisible() {
@@ -245,7 +245,7 @@ export default defineComponent({
         }
       }
 
-      if (this.task.phase === 'PHASE_TYPE_PAUSED') {
+      if (this.task.phase === "PHASE_TYPE_PAUSED") {
         return taskPhaseCode[this.task.phase];
       }
 
@@ -257,20 +257,25 @@ export default defineComponent({
         if (span > 15 * 60) {
           return "--";
         }
-        var speedup_speed = "(+0KB/s)"
-        if(this.task.params && this.task.params["speedup_speed"] !== undefined){
-          var new_speed=this.formatSize(this.task.params["speedup_speed"]);
-          if(new_speed !== 0 ){
-            speedup_speed = "(+"+new_speed+"/s)";
+        var speedup_speed = "(+0KB/s)";
+        if (
+          this.task.params &&
+          this.task.params["speedup_speed"] !== undefined
+        ) {
+          var new_speed = this.formatSize(this.task.params["speedup_speed"]);
+          if (new_speed !== 0) {
+            speedup_speed = "(+" + new_speed + "/s)";
           }
         }
-        if(!this.vipData.isVip || this.task.type !=="user#download-url"){
-          speedup_speed=""
+        if (!this.vipData.isVip || this.task.type !== "user#download-url") {
+          speedup_speed = "";
         }
 
         if (this.task.params && this.task.params["speed"] !== undefined) {
           const speed = this.formatSize(this.task.params["speed"]);
-          return speed === 0 ? (`${speed}KB/s`+speedup_speed) : (`${speed}/s`+speedup_speed);
+          return speed === 0
+            ? `${speed}KB/s` + speedup_speed
+            : `${speed}/s` + speedup_speed;
         } else {
           return `0KB/s`;
         }
@@ -278,17 +283,21 @@ export default defineComponent({
 
       return taskPhaseCode[this.task.phase];
     },
-    hasSpeed () {
-      return this.task.phase === 'PHASE_TYPE_RUNNING' ||
-        this.task.phase === 'PHASE_TYPE_PENDING' ||
-        this.task.phase === 'PHASE_TYPE_PAUSED'
+    hasSpeed() {
+      return (
+        this.task.phase === "PHASE_TYPE_RUNNING" ||
+        this.task.phase === "PHASE_TYPE_PENDING" ||
+        this.task.phase === "PHASE_TYPE_PAUSED"
+      );
     },
-    iconLink () {
-      return this.task.thumbnail_link || this.task.icon_link || staticIcons.other;
+    iconLink() {
+      return (
+        this.task.thumbnail_link || this.task.icon_link || staticIcons.other
+      );
     },
-    taskDate () {
-      return parseTime(this.task.created_time, "{y}-{m}-{d} {h}:{i}")
-    }
+    taskDate() {
+      return parseTime(this.task.updated_time || this.task.created_time, "{y}-{m}-{d} {h}:{i}");
+    },
   },
   methods: {
     formatSize,
@@ -304,23 +313,23 @@ export default defineComponent({
           id: task.id,
           space: task.space,
           type: task.type,
-          action: "pause"
+          action: "pause",
         };
         await this.$store.dispatch("drive/operateTask", params);
         this.$message({
           type: "success",
-          message: "操作成功"
+          message: "操作成功",
         });
         this.stat("downloading_pause_btn_click", {
-          result: "success"
+          result: "success",
         });
       } catch (e) {
         this.$message({
           type: "error",
-          message: "暂停失败"
+          message: "暂停失败",
         });
         this.stat("downloading_pause_btn_click", {
-          result: "fail"
+          result: "fail",
         });
       }
     },
@@ -329,27 +338,27 @@ export default defineComponent({
         id: task.id,
         space: task.space,
         type: task.type,
-        action: "running"
+        action: "running",
       };
 
       try {
         await this.$store.dispatch("drive/operateTask", params);
         this.$message({
           type: "success",
-          message: "操作成功"
+          message: "操作成功",
         });
 
         this.stat("downloading_start_btn_click", {
-          result: "success"
+          result: "success",
         });
       } catch (e) {
         this.$message({
           type: "error",
-          message: "开启下载失败"
+          message: "开启下载失败",
         });
 
         this.stat("downloading_start_btn_click", {
-          result: "fail"
+          result: "fail",
         });
       }
     },
@@ -358,14 +367,14 @@ export default defineComponent({
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-        closeOnClickModal: false
+        closeOnClickModal: false,
       })
         .then(async () => {
           try {
             // delete before recreating
             const delParams = {
               ids: [task.id],
-              space: task.space
+              space: task.space,
             };
 
             const res = await this.$store.dispatch(
@@ -381,8 +390,8 @@ export default defineComponent({
                   name: task.name,
                   file_size: task.file_size,
                   file_name: task.file_name,
-                  file_count: task.params.sub_file_count || "1"
-                }
+                  file_count: task.params.sub_file_count || "1",
+                },
               ];
 
               this.$parent.refresh(urls, resource, "refresh");
@@ -395,7 +404,7 @@ export default defineComponent({
           } catch (e) {
             this.$message({
               type: "error",
-              message: "操作失败"
+              message: "操作失败",
             });
           }
         })
@@ -403,8 +412,8 @@ export default defineComponent({
     },
     handleSpeedUp() {
       this.stat("vip_accelerate_btn_click");
-    }
-  }
+    },
+  },
 });
 </script>
 

@@ -5,13 +5,13 @@
         <h3>{{ title }}</h3>
       </div>
       <list-empty v-if="!hasLogin"></list-empty>
-      <div v-else-if="tasks.list.length === 0" class="task-list__empty">
+      <div v-else-if="showTasks.list.length === 0" class="task-list__empty">
         <file-empty text="暂无记录"></file-empty>
       </div>
       <div v-else class="task-list__content" ref="list">
         <ul>
           <TaskListItem
-            v-for="item in tasks.list"
+            v-for="item in showTasks.list"
             :key="item"
             :tid="item"
             @refresh="refresh"
@@ -64,15 +64,12 @@ export default defineComponent({
   },
   computed: {
     ...mapState('drive', ['tasks', 'tasksDone', 'currentTabId']),
-    tasks () {
-      return this.driveStore.tasks || {}
+    ...mapState('user', ['curUser']),
+    showTasks () {
+      return this.currentTabId === 'ing' ? this.tasks : this.tasksDone
     },
-
     hasMore () {
-      return !!this.tasks.pageToken
-    },
-    curUser() {
-      return this.$store.state.user.curUser;
+      return !!this.showTasks.pageToken
     },
     hasLogin() {
       return this.curUser.userId !== "0";

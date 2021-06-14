@@ -47,11 +47,17 @@ export default {
     currentTabId: "ing",
     feedbackVisible: false, // 意见反馈的显示
     treeDataVisible: false, // 目录树选择的显示
-    treeData: [], // 目录树
+    treeData: [{
+      id: '',
+      title: '我的云盘',
+      icon: staticIcons.dir,
+      path: '',
+    }], // 目录树
     treeNodeId: "", // 目录选择的ID
     treeNodePath: "", // 目录选择的真实路径
   }),
-  getters: {},
+  getters: {
+  },
   mutations: {
     set(state, file) {
       state.all[file.id] = Object.assign({}, state.all[file.id], file);
@@ -73,7 +79,6 @@ export default {
       state,
       { files, space = "", parentId = "", hasMore = false, refresh = false }
     ) {
-      console.log(files, space, parentId, hasMore, refresh);
       state.files.hasMore = hasMore;
       state.files.space = space;
       state.files.parentId = parentId;
@@ -443,9 +448,9 @@ export default {
         type: { in: "user#download,user#download-url" },
       };
 
-      if (phaseCheck) {
-        filters.phase = {};
-      }
+      // if (phaseCheck) {
+      //   filters.phase = {};
+      // }
 
       const newParams = Object.assign({}, params, {
         space: target,
@@ -631,12 +636,13 @@ export default {
             id: v.id,
             title: v.name,
             path: v.params.RealPath,
+            children: []
           }));
         commit("update", {
           treeData,
           treeDataVisible: true,
         });
-        return res;
+        return treeData;
       });
     },
     addFileTreeFolder({ commit, state }, params) {

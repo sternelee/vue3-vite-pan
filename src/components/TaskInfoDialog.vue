@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="添加下载链接"
-    v-model="visibleDialog"
+    v-model="isVisible"
     width="580px"
     :close-on-click-modal="false"
     custom-class="nas-task-dialog"
@@ -20,7 +20,7 @@
             :key="index"
             class="url-info-item"
           >
-            <img :src="item | displayIcon" alt="图标" />
+            <img :src="displayIcon(item)" alt="图标" />
             <span>{{ item.name }}</span>
             <span
               >{{ formatSize(item.file_size || 0) }}(共{{
@@ -38,8 +38,9 @@
       </div>
       <div class="task-dialog__tip">下载到：</div>
       <div class="task-dialog__folder">
-        <span @click="handleShowFolder" :title="downloadPath">{{ downloadPath }}</span>
+        <span @click="handleShowFolder" style="cursor:pointer;flex:1;" :title="downloadPath">{{ downloadPath }}</span>
         <span style="text-align:right;">剩余：{{ formatSize(deviceInfo.limit - deviceInfo.usage) }}</span>
+        <span @click="handleShowFolder" class="td-tree-node__image-icon" style="background-image: url(&quot;https://backstage-img-ssl.a.88cdn.com/a4f9a4394a245b3671227860025f905432c1e297&quot;);width:16px;height:16px;background-size:contain;"></span>
         <span v-if="notEnouth" style="color: #E66056;position:absolute;left:34%;">磁盘剩余空间不足(请保证空间大于文件大小)</span>
       </div>
       <el-button
@@ -70,6 +71,7 @@ export default defineComponent({
   emits: ['close', 'submit'],
   data() {
     return {
+      isVisible: false,
       loading: true
     };
   },
@@ -102,19 +104,11 @@ export default defineComponent({
     },
     downloadPath () {
       return this.treeNodePath || this.deviceInfo.path || "--"
-    }
+    },
   },
   watch: {
     visible (val) {
-      this.visibleDialog = val
-    }
-  },
-  filters: {
-    displayIcon(info) {
-      if (info.meta && info.meta.icon) {
-        return info.meta.icon
-      }
-      return staticIcons.other;
+      this.isVisible = val
     }
   },
   methods: {
@@ -132,6 +126,9 @@ export default defineComponent({
       this.$store.dispatch('drive/loadFolders', {
         space: this.target
       })
+    },
+    displayIcon (info) {
+      return info.meta && info.meta.icon || staticIcons.other
     }
   }
 });
@@ -179,12 +176,11 @@ $file-size: 124px;
     line-height: 30px;
     margin: 10px 0 20px 0;
     background: #ffffff;
-    border: 1px solid #e6e6e6;
+    border: 1px solid #231818;
     border-radius: 4px;
     position: relative;
 
     span {
-      flex: 1;
       padding: 0 12px;
       font-size: 12px;
       color: #b3b3b3;

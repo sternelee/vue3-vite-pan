@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import alias from '@rollup/plugin-alias'
+import legacy from '@vitejs/plugin-legacy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,7 +11,10 @@ export default defineConfig({
         { find: /@\/(.*)/, replacement: '/src/$1'}
       ]
     }),
-    vue()
+    vue(),
+    legacy({
+      targets: ['defaults', 'not IE 11']
+    })
   ],
   server: {
     proxy: {

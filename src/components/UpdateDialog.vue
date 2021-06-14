@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="当前版本已经过期"
-    v-model="visibleDialog"
+    v-model="isVisible"
     :show-close="false"
     :close-on-click-modal="false"
     width="520px"
@@ -32,6 +32,7 @@ export default defineComponent({
   emits: ['close'],
   data() {
     return {
+      isVisible: false,
       loading: true
     };
   },
@@ -45,7 +46,7 @@ export default defineComponent({
   },
   watch: {
     visible (val) {
-      this.visibleDialog = val
+      this.isVisible = val
     }
   },
   mounted() {},

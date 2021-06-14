@@ -1,0 +1,91 @@
+@import "config";
+
+/* scrollbar */
+@mixin scrollbar {
+  $--scrollbar-thumb-background: rgba(0, 0, 0, 0.15);
+  $--scrollbar-track-background: #fff;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background: transparent;
+    &:horizontal {
+      height: 8px;
+      border-bottom: solid 2px #fff;
+    }
+    &-thumb {
+      border-radius: 4px;
+      width: 8px;
+      background: $--scrollbar-thumb-background;
+      border-right: solid 2px #fff;
+      &:hover {
+        background: rgba(0, 0, 0, 0.3);
+      }
+    }
+  }
+}
+
+/* BEM */
+@mixin b($block) {
+  $B: $namespace + "-" + $block !global;
+  .#{$B} {
+    @content;
+  }
+}
+
+@mixin e($element) {
+  $selector: &;
+  $currentSelector: "";
+  @each $unit in $element {
+    $currentSelector: #{$currentSelector +
+      "." +
+      $B +
+      $element-separator +
+      $unit +
+      ","};
+  }
+  @at-root {
+    #{$currentSelector} {
+      @content;
+    }
+  }
+}
+
+@mixin m($modifier) {
+  $selector: &;
+  $currentSelector: "";
+  @each $unit in $modifier {
+    $currentSelector: #{$currentSelector +
+      & +
+      $modifier-separator +
+      $unit +
+      ","};
+  }
+
+  @at-root {
+    #{$currentSelector} {
+      @content;
+    }
+  }
+}
+
+@mixin when($state) {
+  @at-root {
+    &.#{$state-prefix + $state} {
+      @content;
+    }
+  }
+}
+
+@mixin arrow($width1, $width2, $color, $pos) {
+  position: absolute;
+  width: 0;
+  height: 0;
+  font-size: 0;
+  overflow: hidden;
+  border-style: dashed;
+  border-color: transparent;
+  border-width: $width1 $width2;
+  border-#{$pos}-color: $color;
+  content: '';
+}
+
