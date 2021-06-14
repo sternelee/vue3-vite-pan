@@ -25,6 +25,7 @@
         @add-task="handleAddTask"
       />
       <div class="nas-content">
+        <!-- <SvipTip /> -->
         <TaskList
           v-if="tabId === 'ing' || tabId === 'done'"
           :title="tabId === 'ing' ? '下载中' : '已完成'"
@@ -82,6 +83,7 @@ import DeviceExcessDialog from "@/components/DeviceExcessDialog.vue";
 import TaskExcessDialog from "@/components/TaskExcessDialog.vue";
 import FeedbackDiglog from "@/components/FeedbackDialog.vue";
 import FileTreeDialog from "@/components/FileTreeDialog.vue";
+import SvipTip from "@/components/SvipTip.vue";
 
 import { driveFetch } from "@/api";
 
@@ -109,7 +111,8 @@ export default defineComponent({
     UpdateDialog,
     Loading,
     FeedbackDiglog,
-    FileTreeDialog
+    FileTreeDialog,
+    SvipTip
   },
   data() {
     return {
@@ -140,7 +143,7 @@ export default defineComponent({
       'taskExpiresIn',
       'feedbackVisible',
       'treeDataVisible',
-      'files'
+      'files',
     ]),
     ...mapState('user', ['userInfo', 'curUser']),
     tabId () {
@@ -201,11 +204,6 @@ export default defineComponent({
   },
   async mounted() {
     this.initPage();
-    // setTimeout(() => {
-    //   this.$store.commit('drive/update', {
-    //     treeDataVisible: true
-    //   })
-    // }, 1000)
   },
   beforeDestroy() {
     this.clearTaskTimers();

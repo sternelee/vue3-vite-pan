@@ -1,22 +1,15 @@
-// import { getStore } from '@/plugins/vuex-store-plugin'
-// import {  } from 'vue'
-
 export function stat (category, action, data) {
-  console.log('stat', this)
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.log(category, action, data)
   }
 
-  // const store = getStore()
-  // const userid = store.state.user.curUser.userId || ''
-  // const target = store.state.user.userInfo.target || ''
-  // let isVip = false
-  // if (store.state.user.curUser.vipData) {
-  //   isVip = store.state.user.curUser.vipData.isVip || false
-  // }
-  const userid = ''
-  const target = ''
-  const isVip = false
+  const store = this.$store
+  const userid = store.state.user.curUser.userId || ''
+  const target = store.state.user.userInfo.target || ''
+  let isVip = false
+  if (store.state.user.curUser.vipData) {
+    isVip = store.state.user.curUser.vipData.isVip || false
+  }
 
   const extraData = {
     clientType: 'pc',

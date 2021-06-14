@@ -11,8 +11,6 @@ export default defineComponent({
   components: {
     RouterView
   },
-  mounted () {
-    console.log(this.$store.state)
-  }
+  mounted () {}
 })
 </script>
