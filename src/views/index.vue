@@ -25,7 +25,7 @@
         @add-task="handleAddTask"
       />
       <div class="nas-content">
-        <!-- <SvipTip /> -->
+        <SvipTip v-if="svipTipVisible" />
         <TaskList
           v-if="tabId === 'ing' || tabId === 'done'"
           :title="tabId === 'ing' ? '下载中' : '已完成'"
@@ -65,6 +65,7 @@
       :visible="treeDataVisible"
       type="2"
     />
+    <SvipTipBaotuan :visible="baotuanVisible" />
   </el-container>
 </template>
 
@@ -84,7 +85,7 @@ import TaskExcessDialog from "@/components/TaskExcessDialog.vue";
 import FeedbackDiglog from "@/components/FeedbackDialog.vue";
 import FileTreeDialog from "@/components/FileTreeDialog.vue";
 import SvipTip from "@/components/SvipTip.vue";
-
+import SvipTipBaotuan from "@/components/SvipTipBaotuan.vue"
 import { driveFetch } from "@/api";
 
 function task_param(task, name) {
@@ -112,7 +113,8 @@ export default defineComponent({
     Loading,
     FeedbackDiglog,
     FileTreeDialog,
-    SvipTip
+    SvipTip,
+    SvipTipBaotuan
   },
   data() {
     return {
@@ -144,6 +146,8 @@ export default defineComponent({
       'feedbackVisible',
       'treeDataVisible',
       'files',
+      'svipTipVisible',
+      'baotuanVisible'
     ]),
     ...mapState('user', ['userInfo', 'curUser']),
     tabId () {

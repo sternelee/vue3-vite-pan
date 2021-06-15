@@ -55,6 +55,10 @@ export default {
     }], // 目录树
     treeNodeId: "", // 目录选择的ID
     treeNodePath: "", // 目录选择的真实路径
+    svipTipVisible: false,
+    baotuanVisible: false, // 抱团下载的tip
+    taotuanId: "", // 显示抱团下载tip的任务ID
+    taotuianNum: "22", // 显示抱团下载tip的任务人数
   }),
   getters: {
   },
@@ -488,6 +492,9 @@ export default {
             refresh,
             pageToken: res.next_page_token || "",
           });
+          commit("update", {
+            taotuanId: list[0]
+          })
         } else {
           commit("setTasksDone", {
             list,

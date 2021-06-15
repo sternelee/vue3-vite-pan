@@ -104,6 +104,11 @@
           <i class="iconfont icon-loading icon-loading-delete" v-else />
         </div>
       </div>
+      <div class="task-item__tip" v-if="tid === taotuanId">
+        <span class="task-item__tip-icon"></span>
+        <p>当前已有{{taotuianNum}}人加入抱团下载</p>
+        <a href="javascript:;" @click="showBaotuan">抱团下载</a>
+      </div>
     </div>
   </li>
 </template>
@@ -130,7 +135,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState("drive", ["all"]),
+    ...mapState("drive", ["all", "taotuanId", "taotuianNum"]),
     task() {
       return this.all[this.tid];
     },
@@ -413,6 +418,11 @@ export default defineComponent({
     handleSpeedUp() {
       this.stat("vip_accelerate_btn_click");
     },
+    showBaotuan () {
+      this.$store.commit("drive/update", {
+        baotuanVisible: true
+      })
+    }
   },
 });
 </script>
@@ -425,7 +435,7 @@ export default defineComponent({
     display: flex;
     align-items: center;
     padding: 16px 12px;
-    margin: 10px;
+    margin: 10px 10px 0;
     background: #fff;
     border: 1px solid #fff;
     transition: all 0.2s ease-in;
@@ -574,6 +584,36 @@ export default defineComponent({
       border-radius: 2px;
       background-image: linear-gradient(90deg, #ffe5ae 2%, #ffeaa0 100%);
       border-radius: 4px;
+    }
+  }
+  &__tip {
+    background: #FFF8E4;
+    font-size: 12px;
+    color: #CC8542;
+    display: flex;
+    align-items: center;
+    margin: 0 12px;
+    height: 36px;
+    &-icon {
+      width: 24px;
+      height: 24px;
+      background-image: url("../assets/icon-baotuan@3x.png");
+      background-size: cover;
+      margin-left: 18px;
+    }
+    p {
+      margin-left: 18px;
+    }
+    a {
+      width: 72px;
+      height: 26px;
+      line-height: 26px;
+      text-align: center;
+      background: #FCD68F;
+      border-radius: 20px;
+      color: #916146;
+      margin-left: auto;
+      margin-right: 80px;
     }
   }
 }
