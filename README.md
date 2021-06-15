@@ -2,6 +2,10 @@
 
 This template should help get you started developing with Vue 3 and Typescript in Vite.
 
+## 设计稿
+
+[smb://192.168.16.189/部门/设计部/需求设计稿/手雷/手机迅雷安卓/nas合作/2021.06.01远程下载为超级会员专属打造](smb://192.168.16.189/部门/设计部/需求设计稿/手雷/手机迅雷安卓/nas合作/2021.06.01远程下载为超级会员专属打造)
+
 ## 相关使用文档
 
 ### [https://vue3js.cn/](https://vue3js.cn/)

@@ -135,19 +135,20 @@ export default {
     delTasks(state, { ids, type }) {
       if (type === "spec") {
         // 改变任务状态，而非从列表删除，等待下次真实状态返回更新
-        state.tasks.list = state.tasks.list.map((v) => {
+        state.tasks.list = state.tasks.list.map((k) => {
+          const v = state.all[k]
           for (let id of ids) {
             if (v.id === id && v.params) {
               const spec = '{"phase":"delete"}';
               const params = Object.assign({}, v.params, { spec });
-              v.params = params;
-              return v;
+              state.all[k].params = params
+              return k;
             }
-            return v;
+            return k;
           }
         });
       } else {
-        state.tasks.list = state.tasks.list.filter((v) => !ids.includes(v));
+        state.tasks.list = state.tasks.list.filter((k) => !ids.includes(k));
       }
     },
     pauseTasks(state, { ids, type }) {
@@ -158,9 +159,10 @@ export default {
             const spec = '{"phase":"pause"}';
             const status = '{"phase": "running"}';
             const params = Object.assign({}, v.params, { spec, status });
-            return Object.assign({}, v, { params });
+            state.all[k].params = params
+            return k
           }
-          return v;
+          return k;
         }
       });
     },
@@ -172,9 +174,10 @@ export default {
             const spec = '{"phase":"running"}';
             const status = '{"phase": "pause"}';
             const params = Object.assign({}, v.params, { spec, status });
-            return Object.assign({}, v, { params });
+            state.all[k].params = params
+            return k
           }
-          return v;
+          return k;
         }
       });
     },
@@ -474,13 +477,6 @@ export default {
 
         // if (phaseCheck) {
         //   commit("changeTaskInfo", { list, phaseType });
-        // }
-
-        // if (phaseCheck) {
-        //   commit("update", {
-        //     taskExpiresIn: res.expires_in,
-        //   });
-        //   return ingList;
         // }
 
         commit("update", {
